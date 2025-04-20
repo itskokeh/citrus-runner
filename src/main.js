@@ -1,7 +1,7 @@
-import Phaser from 'phaser'
-import PreloadScene from './scenes/PreloadScene'
-import GameScene from './scenes/GameScene'
-import UIScene from './scenes/UIScene'
+import Phaser from 'phaser';
+import PreloadScene from './scenes/PreloadScene';
+import GameScene from './scenes/GameScene';
+import UIScene from './scenes/UIScene';
 
 const config = {
   type: Phaser.AUTO,
@@ -17,6 +17,8 @@ const config = {
     mode: Phaser.Scale.FIT,
     autocenter: Phaser.Scale.CENTER_BOTH
   }
-}
+};
 
-const game = new Phaser.Game(config)
+const game = new Phaser.Game(config);
+
+console.log(game);
