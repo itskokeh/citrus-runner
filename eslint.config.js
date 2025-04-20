@@ -1,3 +1,5 @@
-import neostandard from 'neostandard'
+import neostandard from 'neostandard';
 
-export default neostandard({})
+export default neostandard({
+  semi: true
+});
