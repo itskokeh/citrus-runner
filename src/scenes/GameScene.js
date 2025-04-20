@@ -8,8 +8,26 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create () {
-    this.ground = this.physics.add.staticGroup();
-    this.ground.create(400, 580, 'ground').setScale(2).refreshBody();
+    this.scene.launch('UIScene');
+
+    const bg = this.add.image(0, 0, 'arena').setOrigin(0, 0);
+    // Set game width and height
+    const { width, height } = this.scale;
+    // Get original image size
+    const bgWidth = bg.width;
+    const bgHeight = bg.height;
+    // Get original image size
+    const scaleX = width / bgWidth;
+    const scaleY = height / bgHeight;
+    // Use the larger scale to fully fit the screen (can crop)
+    const scale = Math.max(scaleX, scaleY);
+    bg.setScale(scale);
+    // Center the background if needed
+    bg.setPosition(width / 2, height / 2);
+    bg.setOrigin(0.5, 0.5);
+
+    // this.ground = this.physics.add.staticGroup();
+    // this.ground.create(100, 280, 'ground').setScale(2).refreshBody();
 
     this.player = new Player(this, 100, 500);
     this.tokens = this.physics.add.group();
