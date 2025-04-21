@@ -12,9 +12,12 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "phaser": "^3.88.2"
+    "phaser": "^3.88.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
     "neostandard": "^0.12.1",
     "vite": "^6.3.2"
   }
