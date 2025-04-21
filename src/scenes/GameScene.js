@@ -1,6 +1,7 @@
 import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
+import { createObstacle } from '../objects/obstacles/obstacleFactory';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
@@ -26,13 +27,6 @@ export default class GameScene extends Phaser.Scene {
     bg.setPosition(width / 2, height / 2);
     bg.setOrigin(0.5, 0.5);
 
-    // const floor = this.add.image(0, this.scale.height, 'arena-ground').setOrigin(0, 0);
-    // // Align left and bottom
-    // floor.setOrigin(0, 1);
-    // // Scale it to fit width
-    // floor.displayWidth = this.scale.width;
-    // floor.setScale(floor.scaleX, 0.1);
-
     const floorHeight = 40;
     // Visual layer
     this.floorVisual = this.add.tileSprite(
@@ -51,6 +45,7 @@ export default class GameScene extends Phaser.Scene {
       'arena-ground'
     ).setScale(1, 0.2).refreshBody();
 
+    this.obstacles = this.physics.add.group();
     this.player = new Player(this, 100, 400);
     this.tokens = this.physics.add.group({
       allowGravity: false
@@ -59,6 +54,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.createTokenPattern();
     this.powerupTimer = this.time.addEvent({ delay: 10000, callback: () => spawnPowerup(this), loop: true });
+    this.time.addEvent({ delay: 3000, callback: this.spawnObstacle, callbackScope: this, loop: true });
 
     this.physics.add.collider(this.player.sprite, this.floorPhysics);
     this.physics.add.overlap(this.player.sprite, this.tokens, (_, token) => {
@@ -69,6 +65,7 @@ export default class GameScene extends Phaser.Scene {
       applyPowerup(this.player, powerup.texture.key);
       powerup.destroy();
     });
+    this.physics.add.overlap(this.player, this.obstacles, this.handleCollision, null, this);
   }
 
   createTokenPattern () {
@@ -110,6 +107,31 @@ export default class GameScene extends Phaser.Scene {
       const y = Phaser.Math.Between(200, 500);
       spawnToken(this, x, y);
     }
+  }
+
+  spawnObstacle () {
+    const rand = Phaser.Math.Between(0, 3);
+    const x = 800;
+    const y = 300;
+
+    switch (rand) {
+      case 0:
+        createObstacle('crate', this, x, y);
+        break;
+      case 1:
+        createObstacle('spike', this, x, y - 20);
+        break;
+      case 2:
+        createObstacle('flying-enemy', this, x, y - 10);
+        break;
+      case 3:
+        createObstacle('group', this, x, y, { count: 4 });
+        break;
+    }
+  }
+
+  handleCollision (player, obstacle) {
+    this.scene.restart();
   }
 
   update (time, delta) {
