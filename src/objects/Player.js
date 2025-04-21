@@ -1,14 +1,15 @@
 export default class Player {
   constructor (scene, x, y) {
     this.scene = scene;
-    this.sprite = scene.physics.add.sprite(x, y, 'player').setCollideWorldBounds(true);
+    this.sprite = scene.physics.add.sprite(x, y, 'player');
+    this.sprite.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
-    scene.registry.set('score', 0);
+    // scene.registry.set('score', 0);
     this.maxJumps = 2;
     this.jumpCount = 2;
     this.airSuspension = false;
-    // this.sprite.body.setGravityY(1000);
+    this.sprite.body.setGravityY(1000);
   }
 
   collectToken () {
@@ -17,28 +18,25 @@ export default class Player {
   }
 
   update () {
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-      if (this.sprite.body.blocked.down || this.jumpCount < this.maxJumps) {
-        this.sprite.setVelocityY(-400);
-        this.jumpCount++;
-        //  If this is the second jump, extend hang time slightly
-        if (this.jumpCount === 2) {
-          this.temporarilyFloat();
-        }
-      }
-    }
-    if (this.cursors.up.isDown && this.sprite.body.touching.down) {
+    const isGrounded = this.sprite.body.blocked.down || this.sprite.body.touching.down;
+
+    // Reset jump count when grounded
+    if (isGrounded) {
       this.jumpCount = 0;
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumpCount < this.maxJumps) {
       this.sprite.setVelocityY(-500);
+      this.jumpCount++;
+      this.suspendGravity();
     }
   }
 
-  temporarilyFloat () {
+  suspendGravity () {
     if (this.airSuspension) return;
 
     this.airSuspension = true;
     const originalGravity = this.sprite.body.gravity.y;
-    this.sprite.body.setGravityY(500);
+    this.sprite.body.setGravityY(400);
 
     this.scene.time.delayedCall(800, () => {
       this.sprite.body.setGravityY(originalGravity);
