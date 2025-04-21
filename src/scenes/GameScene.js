@@ -1,5 +1,5 @@
 import Player from '../objects/Player';
-import Token from '../objects/Token';
+import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
 
 export default class GameScene extends Phaser.Scene {
@@ -52,10 +52,13 @@ export default class GameScene extends Phaser.Scene {
     ).setScale(1, 0.2).refreshBody();
 
     this.player = new Player(this, 100, 500);
-    this.tokens = this.physics.add.group();
+    this.tokens = this.physics.add.group({
+      allowGravity: false
+    });
     this.powerups = this.physics.add.group();
 
-    this.tokenTimer = this.time.addEvent({ delay: 1000, callback: () => new Token(this), loop: true });
+    // this.tokenTimer = this.time.addEvent({ delay: 1000, callback: () => new Token(this), loop: true });
+    this.createTokenCluster();
     this.powerupTimer = this.time.addEvent({ delay: 10000, callback: () => spawnPowerup(this), loop: true });
 
     this.physics.add.collider(this.player.sprite, this.floorPhysics);
@@ -69,7 +72,41 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
+  createTokenCluster () {
+    const clusterSize = Phaser.Math.Between(3, 6);
+    let tokensSpawned = 0;
+
+    const spawnClusterToken = () => {
+      if (tokensSpawned < clusterSize) {
+        spawnToken(this);
+        tokensSpawned++;
+        this.time.delayedCall(200, spawnClusterToken);
+      } else {
+        this.time.delayedCall(3000, () => this.createTokenCluster());
+      }
+    };
+    spawnClusterToken();
+  }
+
   update (time, delta) {
     this.player.update();
+
+    // Scroll floor to the left to simulate motion
+    this.floorVisual.tilePositionX += 4;
+    // Move tokens and powerups left
+    this.tokens.children.iterate(token => {
+      if (!token) return;
+      token.x -= 4;
+      if (token.x < -token.width) {
+        token.destroy();
+      }
+    });
+
+    this.powerups.children.iterate(powerup => {
+      powerup.x -= 4;
+      if (powerup.x < -powerup.width) {
+        powerup.destroy();
+      }
+    });
   }
 }
