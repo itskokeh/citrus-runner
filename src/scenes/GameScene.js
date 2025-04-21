@@ -51,14 +51,13 @@ export default class GameScene extends Phaser.Scene {
       'arena-ground'
     ).setScale(1, 0.2).refreshBody();
 
-    this.player = new Player(this, 100, 500);
+    this.player = new Player(this, 100, 400);
     this.tokens = this.physics.add.group({
       allowGravity: false
     });
     this.powerups = this.physics.add.group();
 
-    // this.tokenTimer = this.time.addEvent({ delay: 1000, callback: () => new Token(this), loop: true });
-    this.createTokenCluster();
+    this.createTokenPattern();
     this.powerupTimer = this.time.addEvent({ delay: 10000, callback: () => spawnPowerup(this), loop: true });
 
     this.physics.add.collider(this.player.sprite, this.floorPhysics);
@@ -72,20 +71,45 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  createTokenCluster () {
-    const clusterSize = Phaser.Math.Between(3, 6);
-    let tokensSpawned = 0;
+  createTokenPattern () {
+    const patternType = Phaser.Math.Between(0, 2);
 
-    const spawnClusterToken = () => {
-      if (tokensSpawned < clusterSize) {
-        spawnToken(this);
-        tokensSpawned++;
-        this.time.delayedCall(200, spawnClusterToken);
-      } else {
-        this.time.delayedCall(3000, () => this.createTokenCluster());
-      }
-    };
-    spawnClusterToken();
+    switch (patternType) {
+      case 0:
+        this.spawnRow(5, 400);
+        break;
+      case 1:
+        this.spawnVertical(3, 600);
+        break;
+      case 2:
+        this.spawnRandomCloud(5);
+        break;
+    }
+
+    // Repeat after 2.5s
+    this.time.delayedCall(2500, () => this.createTokenPattern());
+  }
+
+  spawnRow (count, y) {
+    const xStart = this.scale.width + 100;
+    for (let i = 0; i < count; i++) {
+      spawnToken(this, xStart + i * 60, y);
+    }
+  }
+
+  spawnVertical (count, baseY) {
+    const x = this.scale.width + 100;
+    for (let i = 0; i < count; i++) {
+      spawnToken(this, x, baseY - i * 40);
+    }
+  }
+
+  spawnRandomCloud (count) {
+    for (let i = 0; i < count; i++) {
+      const x = this.scale.width + Phaser.Math.Between(0, 200);
+      const y = Phaser.Math.Between(200, 500);
+      spawnToken(this, x, y);
+    }
   }
 
   update (time, delta) {
