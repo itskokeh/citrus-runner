@@ -17,14 +17,14 @@ export default class Player {
     this.scene.registry.set('score', this.score);
   }
 
-  update () {
+  jump () {
     const isGrounded = this.sprite.body.blocked.down || this.sprite.body.touching.down;
 
     // Reset jump count when grounded
     if (isGrounded) {
       this.jumpCount = 0;
     }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up) && this.jumpCount < this.maxJumps) {
+    if (this.jumpCount < this.maxJumps) {
       this.sprite.setVelocityY(-500);
       this.jumpCount++;
       this.suspendGravity();
@@ -42,5 +42,11 @@ export default class Player {
       this.sprite.body.setGravityY(originalGravity);
       this.airSuspension = false;
     });
+  }
+
+  update () {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+      this.jump();
+    }
   }
 }
