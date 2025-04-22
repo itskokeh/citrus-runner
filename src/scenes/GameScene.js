@@ -11,21 +11,42 @@ export default class GameScene extends Phaser.Scene {
   create () {
     this.scene.launch('UIScene');
 
-    const bg = this.add.image(0, 0, 'arena').setOrigin(0, 0);
-    // Set game width and height
-    const { width, height } = this.scale;
-    // Get original image size
-    const bgWidth = bg.width;
-    const bgHeight = bg.height;
-    // Get original image size
-    const scaleX = width / bgWidth;
-    const scaleY = height / bgHeight;
-    // Use the larger scale to fully fit the screen (can crop)
-    const scale = Math.max(scaleX, scaleY);
-    bg.setScale(scale);
-    // Center the background if needed
-    bg.setPosition(width / 2, height / 2);
-    bg.setOrigin(0.5, 0.5);
+    this.background = this.add.tileSprite(
+      0,
+      0,
+      this.scale.width,
+      this.scale.height,
+      'arena'
+    ).setOrigin(0, 0);
+    this.background2 = this.add.tileSprite(
+      0,
+      0,
+      this.scale.width,
+      this.scale.height,
+      'arena-wall'
+    ).setOrigin(0, 0);
+    this.background3 = this.add.tileSprite(
+      0,
+      0,
+      this.scale.width,
+      this.scale.height,
+      'arena-wall-top'
+    ).setOrigin(0, 0);
+    // const bg = this.add.image(0, 0, 'arena').setOrigin(0, 0);
+    // // Set game width and height
+    // const { width, height } = this.scale;
+    // // Get original image size
+    // const bgWidth = bg.width;
+    // const bgHeight = bg.height;
+    // // Get original image size
+    // const scaleX = width / bgWidth;
+    // const scaleY = height / bgHeight;
+    // // Use the larger scale to fully fit the screen (can crop)
+    // const scale = Math.max(scaleX, scaleY);
+    // bg.setScale(scale);
+    // // Center the background if needed
+    // bg.setPosition(width / 2, height / 2);
+    // bg.setOrigin(0.5, 0.5);
 
     const floorHeight = 40;
     // Visual layer
@@ -52,8 +73,12 @@ export default class GameScene extends Phaser.Scene {
     });
     this.powerups = this.physics.add.group();
 
-    this.createTokenPattern();
-    this.powerupTimer = this.time.addEvent({ delay: 10000, callback: () => spawnPowerup(this), loop: true });
+    this.createTokenCluster();
+    this.powerupTimer = this.time.addEvent({
+      delay: 10000,
+      callback: () => spawnPowerup(this),
+      loop: true
+    });
     this.time.addEvent({ delay: 3000, callback: this.spawnObstacle, callbackScope: this, loop: true });
 
     this.physics.add.collider(this.player.sprite, this.floorPhysics);
@@ -68,45 +93,20 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.obstacles, this.handleCollision, null, this);
   }
 
-  createTokenPattern () {
-    const patternType = Phaser.Math.Between(0, 2);
+  createTokenCluster () {
+    const clusterSize = Phaser.Math.Between(3, 6);
+    let tokensSpawned = 0;
 
-    switch (patternType) {
-      case 0:
-        this.spawnRow(5, 400);
-        break;
-      case 1:
-        this.spawnVertical(3, 600);
-        break;
-      case 2:
-        this.spawnRandomCloud(5);
-        break;
-    }
-
-    // Repeat after 2.5s
-    this.time.delayedCall(2500, () => this.createTokenPattern());
-  }
-
-  spawnRow (count, y) {
-    const xStart = this.scale.width + 100;
-    for (let i = 0; i < count; i++) {
-      spawnToken(this, xStart + i * 60, y);
-    }
-  }
-
-  spawnVertical (count, baseY) {
-    const x = this.scale.width + 100;
-    for (let i = 0; i < count; i++) {
-      spawnToken(this, x, baseY - i * 40);
-    }
-  }
-
-  spawnRandomCloud (count) {
-    for (let i = 0; i < count; i++) {
-      const x = this.scale.width + Phaser.Math.Between(0, 200);
-      const y = Phaser.Math.Between(200, 500);
-      spawnToken(this, x, y);
-    }
+    const spawnClusterToken = () => {
+      if (tokensSpawned < clusterSize) {
+        spawnToken(this);
+        tokensSpawned++;
+        this.time.delayedCall(200, spawnClusterToken);
+      } else {
+        this.time.delayedCall(3000, () => this.createTokenCluster());
+      }
+    };
+    spawnClusterToken();
   }
 
   spawnObstacle () {
@@ -137,8 +137,11 @@ export default class GameScene extends Phaser.Scene {
   update (time, delta) {
     this.player.update();
 
+    this.background.tilePositionX += 1;
+    this.background2.tilePositionX += 1;
+    this.background3.tilePositionX += 1;
     // Scroll floor to the left to simulate motion
-    this.floorVisual.tilePositionX += 4;
+    // this.floorVisual.tilePositionX += 4;
     // Move tokens and powerups left
     this.tokens.children.iterate(token => {
       if (!token) return;
