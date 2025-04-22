@@ -9,7 +9,7 @@ export function createObstacle (type, scene, x, y, options = {}) {
       return createCrate(scene, x, y, options);
     case 'spike':
       return createMovingSpike(scene, x, y, options);
-    case 'flying':
+    case 'flying-enemy':
       return createFlyingEnemy(scene, x, y, options);
     case 'group':
       return createGroup(scene, x, y, options);
