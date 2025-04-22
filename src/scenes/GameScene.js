@@ -11,27 +11,47 @@ export default class GameScene extends Phaser.Scene {
   create () {
     this.scene.launch('UIScene');
 
-    this.background = this.add.tileSprite(
+    this.bgIndex = 0;
+    this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
+
+    this.background = this.add.image(
       0,
       0,
+      this.bgTextures[this.bgIndex]
+    ).setOrigin(0, 0).setDisplaySize(
       this.scale.width,
-      this.scale.height,
-      'arena'
-    ).setOrigin(0, 0);
-    this.background2 = this.add.tileSprite(
-      0,
-      0,
-      this.scale.width,
-      this.scale.height,
-      'arena-wall'
-    ).setOrigin(0, 0);
-    this.background3 = this.add.tileSprite(
-      0,
-      0,
-      this.scale.width,
-      this.scale.height,
-      'arena-wall-top'
-    ).setOrigin(0, 0);
+      this.scale.height
+    );
+
+    this.time.addEvent({
+      delay: 20000,
+      loop: true,
+      callback: () => {
+        this.bgIndex = (this.bgIndex + 1) % this.bgTextures.length;
+        this.background.setTexture(this.bgTextures[this.bgIndex]);
+      }
+    });
+    // this.background = this.add.tileSprite(
+    //   0,
+    //   0,
+    //   this.scale.width,
+    //   this.scale.height,
+    //   'arena'
+    // ).setOrigin(0, 0);
+    // this.background2 = this.add.tileSprite(
+    //   0,
+    //   0,
+    //   this.scale.width,
+    //   this.scale.height,
+    //   'arena-wall'
+    // ).setOrigin(0, 0);
+    // this.background3 = this.add.tileSprite(
+    //   0,
+    //   0,
+    //   this.scale.width,
+    //   this.scale.height,
+    //   'arena-wall-top'
+    // ).setOrigin(0, 0);
     // const bg = this.add.image(0, 0, 'arena').setOrigin(0, 0);
     // // Set game width and height
     // const { width, height } = this.scale;
@@ -67,7 +87,12 @@ export default class GameScene extends Phaser.Scene {
     ).setScale(1, 0.2).refreshBody();
 
     this.obstacles = this.physics.add.group();
+
+    // Player logic
     this.player = new Player(this, 100, 400);
+    this.input.on('pointerdown', () => {
+      this.player.jump();
+    });
     this.tokens = this.physics.add.group({
       allowGravity: false
     });
@@ -137,11 +162,10 @@ export default class GameScene extends Phaser.Scene {
   update (time, delta) {
     this.player.update();
 
-    this.background.tilePositionX += 1;
-    this.background2.tilePositionX += 1;
-    this.background3.tilePositionX += 1;
-    // Scroll floor to the left to simulate motion
-    // this.floorVisual.tilePositionX += 4;
+    // this.background.tilePositionX += 1;
+    // this.background2.tilePositionX += 1;
+    // this.background3.tilePositionX += 1;
+
     // Move tokens and powerups left
     this.tokens.children.iterate(token => {
       if (!token) return;
