@@ -11,62 +11,22 @@ export default class GameScene extends Phaser.Scene {
   create () {
     this.scene.launch('UIScene');
 
-    this.bgIndex = 0;
+    // Background
+    const { width, height } = this.scale;
     this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
+    this.bgIndex = 0;
+    this.bgSpeed = 2;
 
-    this.background = this.add.image(
-      0,
-      0,
-      this.bgTextures[this.bgIndex]
-    ).setOrigin(0, 0).setDisplaySize(
-      this.scale.width,
-      this.scale.height
-    );
+    this.backgrounds = [];
 
-    this.time.addEvent({
-      delay: 20000,
-      loop: true,
-      callback: () => {
-        this.bgIndex = (this.bgIndex + 1) % this.bgTextures.length;
-        this.background.setTexture(this.bgTextures[this.bgIndex]);
-      }
-    });
-    // this.background = this.add.tileSprite(
-    //   0,
-    //   0,
-    //   this.scale.width,
-    //   this.scale.height,
-    //   'arena'
-    // ).setOrigin(0, 0);
-    // this.background2 = this.add.tileSprite(
-    //   0,
-    //   0,
-    //   this.scale.width,
-    //   this.scale.height,
-    //   'arena-wall'
-    // ).setOrigin(0, 0);
-    // this.background3 = this.add.tileSprite(
-    //   0,
-    //   0,
-    //   this.scale.width,
-    //   this.scale.height,
-    //   'arena-wall-top'
-    // ).setOrigin(0, 0);
-    // const bg = this.add.image(0, 0, 'arena').setOrigin(0, 0);
-    // // Set game width and height
-    // const { width, height } = this.scale;
-    // // Get original image size
-    // const bgWidth = bg.width;
-    // const bgHeight = bg.height;
-    // // Get original image size
-    // const scaleX = width / bgWidth;
-    // const scaleY = height / bgHeight;
-    // // Use the larger scale to fully fit the screen (can crop)
-    // const scale = Math.max(scaleX, scaleY);
-    // bg.setScale(scale);
-    // // Center the background if needed
-    // bg.setPosition(width / 2, height / 2);
-    // bg.setOrigin(0.5, 0.5);
+    for (let i = 0; i < this.bgTextures.length; i++) {
+      const bg = this.add.image(
+        i * width, 0, this.bgTextures[i]
+      ).setOrigin(
+        0, 0
+      ).setDisplaySize(width, height);
+      this.backgrounds.push(bg);
+    }
 
     const floorHeight = 40;
     // Visual layer
@@ -118,6 +78,17 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.obstacles, this.handleCollision, null, this);
   }
 
+  getNextBg () {
+    this.bgIndex = (this.bgIndex + 1) % this.bgTextures.length;
+    return this.bgTextures[this.bgIndex];
+  }
+
+  getRightmostBg () {
+    return this.backgrounds.reduce((rightmost, bg) => {
+      return bg.x > rightmost.x ? bg : rightmost;
+    }, this.backgrounds[0]);
+  }
+
   createTokenCluster () {
     const clusterSize = Phaser.Math.Between(3, 6);
     let tokensSpawned = 0;
@@ -161,10 +132,21 @@ export default class GameScene extends Phaser.Scene {
 
   update (time, delta) {
     this.player.update();
+    const { width } = this.scale;
 
-    // this.background.tilePositionX += 1;
-    // this.background2.tilePositionX += 1;
-    // this.background3.tilePositionX += 1;
+    for (const bg of this.backgrounds) {
+      bg.x -= this.bgSpeed;
+
+      // When bg1 goes offscreen, recycle it to the right
+      if (bg.x <= -width) {
+        // Move it to the rightmost position
+        const rightmost = this.getRightmostBg();
+        bg.x = rightmost.x + width;
+
+        //  Update its texture to the next in sequence
+        bg.setTexture(this.getNextBg());
+      }
+    }
 
     // Move tokens and powerups left
     this.tokens.children.iterate(token => {
@@ -176,6 +158,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.powerups.children.iterate(powerup => {
+      if (!powerup) return;
       powerup.x -= 4;
       if (powerup.x < -powerup.width) {
         powerup.destroy();
