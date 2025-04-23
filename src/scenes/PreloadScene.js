@@ -4,7 +4,7 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('arena-1', '/arcade-4.webp');
+    this.load.image('arena-1', '/arcade-1.webp');
     this.load.image('arena-2', '/arcade-2.webp');
     this.load.image('arena-3', '/arcade-3.webp');
     this.load.image('arena-4', '/arcade-4.webp');
