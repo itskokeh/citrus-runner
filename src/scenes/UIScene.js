@@ -5,7 +5,25 @@ export default class UIScene extends Phaser.Scene {
 
   create () {
     console.log('UIScene loaded');
-    console.log('togglePause:', this.togglePause);
+
+    const muteButton = this.add.text(10, 10, 'Mute', {
+      font: '24px Arial',
+      fill: '#fff'
+    }).setInteractive();
+
+    const padding = 10;
+    muteButton.setPosition(this.cameras.main.width - muteButton.width - padding, padding);
+
+    const gameScene = this.scene.get('GameScene');
+    const soundManager = gameScene.soundManager;
+
+    muteButton.on('pointerdown', () => {
+      soundManager.toggleMute();
+      muteButton.setText(soundManager.isMuted ? 'Unmute' : 'Mute');
+    });
+
+    // Optional: set initial text correctly
+    muteButton.setText(soundManager.isMuted ? 'Unmute' : 'Mute');
 
     // Inside UIScene.js, in create()
     const centerX = this.cameras.main.width / 2;
