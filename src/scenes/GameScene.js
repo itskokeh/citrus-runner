@@ -3,15 +3,23 @@ import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
 import { createObstacle } from '../objects/obstacles/obstacleFactory';
 import SoundManager from '../utils/soundManager';
+import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
+// import { togglePause } from '../utils/pausePlay';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
     super('GameScene');
     this.soundManager = null;
+    this.isPaused = false;
+    this.backgrounds = [];
+    this.player = null;
+    this.obstacles = [];
+    this.tokens = [];
+    this.powerups = [];
   }
 
   create () {
-    this.scene.launch('UIScene');
+    // this.scene.launch('UIScene');
 
     // Background
     const { width, height } = this.scale;
@@ -85,6 +93,19 @@ export default class GameScene extends Phaser.Scene {
     this.sound.add('backgroundMusic', { loop: true });
     this.sound.play('backgroundMusic');
 
+    // // Pause/Play logic
+    // // Add the pause button logic
+    // this.pauseButton = this.add.text(10, 10, 'Pause',
+    //   { fontSize: '32px', color: '#fff' }
+    // ).setInteractive();
+    // this.pauseButton.on('pointerdown', () => {
+    //   this.togglePause();
+    // });
+
+    // this.input.keyboard.on('keydown-P', () => {
+    //   this.togglePause();
+    // });
+
     // Obstacles logic
     this.obstacles = this.physics.add.group();
 
@@ -107,7 +128,7 @@ export default class GameScene extends Phaser.Scene {
     });
     this.time.addEvent({ delay: 3000, callback: this.spawnObstacle, callbackScope: this, loop: true });
 
-    this.physics.add.collider(this.player.sprite, this.floorPhysics);
+    // this.physics.add.collider(this.player.sprite, this.floorPhysics);
     this.physics.add.overlap(this.player.sprite, this.tokens, (_, token) => {
       token.destroy();
       this.player.collectToken();
@@ -128,6 +149,110 @@ export default class GameScene extends Phaser.Scene {
     return this.backgrounds.reduce((rightmost, bg) => {
       return bg.x > rightmost.x ? bg : rightmost;
     }, this.backgrounds[0]);
+  }
+
+  // togglePause () {
+  //   this.isPaused = !this.isPaused;
+
+  //   if (this.isPaused) {
+  //     // Pause the game
+  //     this.scene.pause();  // This pauses all scenes
+  //     this.physics.world.isPaused = true; // Pauses physics world
+  //     this.time.paused = true;  // Pause the game timer
+
+  //     // Pause animations or tweens if needed
+  //     this.pauseAnimations();
+
+  //     // Update button text
+  //     this.pauseButton.setText('Play');
+
+  //     // Show the UIScene with the resume button
+  //     this.scene.launch('UIScene');
+  //   } else if (this.isPaused === false) {
+  //     // Resume the game
+  //     this.scene.resume();  // Resumes all paused scenes
+  //     this.physics.world.isPaused = false; // Resume physics world
+  //     this.time.paused = false;  // Resume the game timer
+
+  //     // Resume animations or tweens if needed
+  //     this.resumeAnimations();
+
+  //     // Update button text
+  //     this.pauseButton.setText('Pause');
+
+  //     // Stop the UIScene
+  //     this.scene.stop('UIScene');
+  //   }
+  // }
+
+  // pauseAnimations () {
+  //   pauseVelocity([
+  //     this.background,
+  //     ...this.obstacles.getChildren(),
+  //     ...this.tokens.getChildren(),
+  //     ...this.powerups.getChildren()
+  //   ]);
+  // }
+
+  // resumeAnimations () {
+  //   resumeVelocity([
+  //     this.background,
+  //     ...this.obstacles.getChildren(),
+  //     ...this.tokens.getChildren(),
+  //     ...this.powerups.getChildren()
+  //   ]);
+  // }
+
+  togglePause () {
+    this.isPaused = !this.isPaused;
+
+    if (this.isPaused) {
+      this.physics.world.isPaused = true;
+      this.time.paused = true;
+
+      this.pauseGame(); // Use your velocity-based pause helper here
+
+      this.scene.pause('GameScene');
+      // this.scene.launch('UIScene');
+    } else {
+      this.physics.world.isPaused = false;
+      this.time.paused = false;
+
+      this.resumeGame(); // Use your velocity-based resume helper here
+
+      this.scene.resume('GameScene');
+      // this.scene.stop('UIScene');
+    }
+  }
+
+  pauseGame () {
+    this.isPaused = true;
+    this.physics.world.isPaused = true;
+    this.time.paused = true;
+
+    pauseVelocity([
+      ...this.obstacles.getChildren(),
+      ...this.tokens.getChildren(),
+      ...this.powerups.getChildren()
+    ]);
+    this.backgrounds.forEach(bg => {
+      bg.tilePositionXFreeze = true;
+    });
+  }
+
+  resumeGame () {
+    this.isPaused = false;
+    this.physics.world.isPaused = false;
+    this.time.paused = false;
+
+    resumeVelocity([
+      ...this.obstacles.getChildren(),
+      ...this.tokens.getChildren(),
+      ...this.powerups.getChildren()
+    ]);
+    this.backgrounds.forEach(bg => {
+      bg.tilePositionXFreeze = false;
+    });
   }
 
   createTokenCluster () {
@@ -172,7 +297,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update (time, delta) {
-    this.player.update();
+    if (this.isPaused) return;
+    this.player.update(time, delta);
     const { width } = this.scale;
 
     for (const bg of this.backgrounds) {
