@@ -1,5 +1,5 @@
 export default function createFlyingEnemy (scene, x, y, options = {}) {
-  const enemy = scene.physics.add.sprite(x, y, 'flying-enemy');
+  const enemy = scene.physics.add.image(x, y, 'flying-dynamite');
   enemy.setVelocityX(options.speed || -300);
   enemy.setSize(options.width || 48, options.height || 32);
 
