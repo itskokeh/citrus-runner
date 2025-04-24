@@ -2,10 +2,12 @@ import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
 import { createObstacle } from '../objects/obstacles/obstacleFactory';
+import SoundManager from '../utils/soundManager';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
     super('GameScene');
+    this.soundManager = null;
   }
 
   create () {
@@ -28,24 +30,62 @@ export default class GameScene extends Phaser.Scene {
       this.backgrounds.push(bg);
     }
 
-    const floorHeight = 40;
-    // Visual layer
-    this.floorVisual = this.add.tileSprite(
-      0,
-      this.scale.height - floorHeight,
-      this.scale.width,
-      floorHeight,
-      'arena-ground'
-    ).setOrigin(0, 0);
+    // const floorHeight = 40;
 
-    // Collision layer
-    this.floorPhysics = this.physics.add.staticGroup();
-    this.floorPhysics.create(
-      this.scale.width / 2,
-      this.scale.height - 20,
-      'arena-ground'
-    ).setScale(1, 0.2).refreshBody();
+    // // ✅ Visual layer (tileSprite uses resized image directly)
+    // this.floorVisual = this.add.tileSprite(
+    //   0,
+    //   this.scale.height - floorHeight,
+    //   this.scale.width,
+    //   floorHeight,
+    //   'arena-ground'
+    // ).setOrigin(0, 0);
 
+    // // ✅ Collision layer (create a solid physics floor, no sprite scaling)
+    // this.floorPhysics = this.physics.add.staticGroup();
+    // this.floorPhysics.create(
+    //   this.scale.width / 2,
+    //   this.scale.height - floorHeight / 2, // center it at the visual floor
+    //   null // no texture needed, unless you want it visible
+    // ).setSize(this.scale.width, floorHeight).refreshBody();
+
+    // const floorHeight = 40;
+    // // Visual layer
+    // this.floorVisual = this.add.tileSprite(
+    //   0,
+    //   this.scale.height - floorHeight,
+    //   this.scale.width,
+    //   floorHeight,
+    //   'arena-ground'
+    // ).setOrigin(0, 0);
+
+    // // Collision layer
+    // this.floorPhysics = this.physics.add.staticGroup();
+    // this.floorPhysics.create(
+    //   this.scale.width / 2,
+    //   this.scale.height - 20,
+    //   'arena-ground'
+    // ).setScale(1, 0.2).refreshBody();
+
+    // Sound logic
+    this.soundManager = new SoundManager(this);
+
+    const muteButton = this.add.text(10, 10, 'Mute',
+      { font: '24px Arial', fill: '#fff' }
+    ).setInteractive().on('pointerdown', () => {
+      this.soundManager.toggleMute();
+      muteButton.setText(this.soundManager.isMuted ? 'Unmute' : 'Mute');
+    });
+
+    const padding = 10;
+    muteButton.setPosition(
+      this.cameras.main.width - muteButton.width - padding, padding
+    );
+
+    this.sound.add('backgroundMusic', { loop: true });
+    this.sound.play('backgroundMusic');
+
+    // Obstacles logic
     this.obstacles = this.physics.add.group();
 
     // Player logic
@@ -53,6 +93,7 @@ export default class GameScene extends Phaser.Scene {
     this.input.on('pointerdown', () => {
       this.player.jump();
     });
+
     this.tokens = this.physics.add.group({
       allowGravity: false
     });
