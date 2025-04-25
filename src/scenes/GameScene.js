@@ -1,10 +1,10 @@
 import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
-import { createObstacle } from '../objects/obstacles/obstacleFactory';
+// import { createObstacle } from '../objects/obstacles/obstacleFactory';
 import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
-// import { togglePause } from '../utils/pausePlay';
+import { spawnCrateFormation, spawnFlyingDynamite } from '../objects/obstacles/spawner';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
@@ -63,7 +63,9 @@ export default class GameScene extends Phaser.Scene {
     this.sound.play('backgroundMusic');
 
     // Obstacles logic
-    this.obstacles = this.physics.add.group();
+    this.obstacles = this.physics.add.group({
+      allowGravity: false
+    });
 
     // Player logic
     this.player = new Player(this, 100, 400);
@@ -82,7 +84,45 @@ export default class GameScene extends Phaser.Scene {
       callback: () => spawnPowerup(this),
       loop: true
     });
-    this.time.addEvent({ delay: 3000, callback: this.spawnObstacle, callbackScope: this, loop: true });
+
+    this.time.addEvent({
+      delay: Phaser.Math.Between(1000, 3000), // initial delay
+      callback: () => {
+        const spawnFn = Phaser.Math.RND.pick([
+          spawnCrateFormation,
+          spawnFlyingDynamite
+        ]);
+
+        spawnFn(this);
+
+        // Re-schedule again with random delay
+        this.time.addEvent({
+          delay: Phaser.Math.Between(1000, 3000),
+          callback: this.spawnObstacleEvent, // recursively call itself
+          callbackScope: this
+        });
+      },
+      callbackScope: this
+    });
+
+    // this.time.addEvent({
+    //   delay: 3000,
+    //   callback: this.spawnObstacle,
+    //   callbackScope: this,
+    //   loop: true
+    // });
+
+    // this.time.addEvent({
+    //   delay: 2000,
+    //   callback: () => spawnCrateFormation(this),
+    //   loop: true
+    // });
+
+    this.time.addEvent({
+      delay: 1500,
+      callback: () => spawnFlyingDynamite(this),
+      loop: true
+    });
 
     // this.physics.add.collider(this.player.sprite, this.floorPhysics);
     this.physics.add.overlap(this.player.sprite, this.tokens, (_, token) => {
@@ -125,6 +165,22 @@ export default class GameScene extends Phaser.Scene {
 
       this.scene.resume('GameScene');
     }
+  }
+
+  spawnObstacleEvent () {
+    const spawnFn = Phaser.Math.RND.pick([
+      spawnCrateFormation,
+      spawnFlyingDynamite
+    ]);
+
+    spawnFn(this);
+
+    // Re-schedule again with random delay
+    this.time.addEvent({
+      delay: Phaser.Math.Between(1000, 3000),
+      callback: this.spawnObstacleEvent, // recursively call itself
+      callbackScope: this
+    });
   }
 
   pauseGame () {
@@ -173,23 +229,23 @@ export default class GameScene extends Phaser.Scene {
     spawnClusterToken();
   }
 
-  spawnObstacle () {
-    const rand = Phaser.Math.Between(0, 2);
-    const x = 800;
-    const y = 300;
+  // spawnObstacle () {
+  //   const rand = Phaser.Math.Between(0, 2);
+  //   const x = 800;
+  //   const y = 300;
 
-    switch (rand) {
-      case 0:
-        createObstacle('crate', this, x, y);
-        break;
-      case 1:
-        createObstacle('flying-enemy', this, x, y - 10);
-        break;
-      case 2:
-        createObstacle('group', this, x, y, { count: 4 });
-        break;
-    }
-  }
+  //   switch (rand) {
+  //     case 0:
+  //       createObstacle('crate', this, x, y);
+  //       break;
+  //     case 1:
+  //       createObstacle('flying-dynamite', this, x, y - 10);
+  //       break;
+  //     case 2:
+  //       createObstacle('group', this, x, y, { count: 4 });
+  //       break;
+  //   }
+  // }
 
   handleCollision (player, obstacle) {
     this.scene.restart();
