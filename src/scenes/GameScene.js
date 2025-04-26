@@ -40,6 +40,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.sound.add('backgroundMusic', { loop: true });
     this.sound.play('backgroundMusic');
+    const jumpSound = this.sound.add('jumpSound');
 
     // Obstacles logic
     this.obstacles = this.physics.add.group({
@@ -50,6 +51,7 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Player(this, 100, 400);
     this.input.on('pointerdown', () => {
       this.player.jump();
+      jumpSound.play({ volume: 0.5 });
     });
 
     this.tokens = this.physics.add.group({
