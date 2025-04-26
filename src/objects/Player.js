@@ -5,6 +5,7 @@ export default class Player {
     this.sprite.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
+    // this.score.registry.set('score', this.score);
     this.airSuspension = false;
     this.sprite.body.setGravityY(1000);
 
