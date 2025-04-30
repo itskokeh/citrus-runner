@@ -38,8 +38,8 @@ export default class GameScene extends Phaser.Scene {
     // Sound logic
     this.soundManager = new SoundManager(this);
 
-    this.sound.add('backgroundMusic', { loop: true });
-    this.sound.play('backgroundMusic');
+    // this.sound.add('backgroundMusic', { loop: true });
+    // this.sound.play('backgroundMusic');
     const jumpSound = this.sound.add('jumpSound');
 
     // Obstacles logic
@@ -102,6 +102,11 @@ export default class GameScene extends Phaser.Scene {
       powerup.destroy();
     });
     this.physics.add.overlap(this.player, this.obstacles, this.handleCollision, null, this);
+
+    // Remove existing resize listener to prevent conflicts
+    this.scale.off('resize');
+    // Ensure canvas fills screen in landscape
+    this.scale.setGameSize(window.innerWidth, window.innerHeight);
   }
 
   getNextBg () {
