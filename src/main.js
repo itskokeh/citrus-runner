@@ -3,16 +3,20 @@ import PreloadScene from './scenes/PreloadScene';
 import GameScene from './scenes/GameScene';
 import UIScene from './scenes/UIScene';
 
+function getLandscapeSize () {
+  return {
+    width: Math.max(window.innerWidth, window.innerHeight),
+    height: Math.min(window.innerWidth, window.innerHeight)
+  };
+}
+
+const { width, height } = getLandscapeSize();
+
 const config = {
   type: Phaser.AUTO,
+  width,
+  height,
   backgroundColor: '#87ceeb',
-  scale: {
-    mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    parent: 'game-container',
-    width: window.innerWidth > window.innerHeight ? window.innerWidth : window.innerHeight,
-    height: window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth,
-  },
   physics: {
     default: 'arcade',
     arcade: {
@@ -21,16 +25,18 @@ const config = {
     }
   },
   scene: [PreloadScene, GameScene, UIScene],
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    parent: 'game-container',
+    orientation: Phaser.Scale.LANDSCAPE
+  }
 };
 
 const game = new Phaser.Game(config);
 
-// Optional: resize dynamically on orientation change
+// Handle window resize/orientation change
 window.addEventListener('resize', () => {
-  game.scale.resize(
-    window.innerWidth > window.innerHeight ? window.innerWidth : window.innerHeight,
-    window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
-  );
+  const { width, height } = getLandscapeSize();
+  game.scale.resize(width, height);
 });
-
-console.log(game);
