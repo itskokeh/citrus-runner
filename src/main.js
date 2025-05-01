@@ -15,7 +15,7 @@ const config = {
   scene: [PreloadScene, GameScene, UIScene],
   scale: {
     mode: Phaser.Scale.FIT,
-    autocenter: Phaser.Scale.CENTER_BOTH,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: 'game-container'
   }
 };
