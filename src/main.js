@@ -7,7 +7,7 @@ const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
-  backgroundColor: '#87ceeb',
+  parent: 'game-container',
   physics: {
     default: 'arcade',
     arcade: { gravity: { y: 1000 }, debug: false }
