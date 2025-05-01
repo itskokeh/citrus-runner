@@ -2,7 +2,7 @@ import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
 import { createObstacle } from '../objects/obstacles/obstacleFactory';
-import SoundManager from '../utils/soundManager';
+// import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
 // import { togglePause } from '../utils/pausePlay';
 
@@ -57,10 +57,10 @@ export default class GameScene extends Phaser.Scene {
     // ).setScale(1, 0.2).refreshBody();
 
     // Sound logic
-    this.soundManager = new SoundManager(this);
+    // this.soundManager = new SoundManager(this);
 
-    this.sound.add('backgroundMusic', { loop: true });
-    this.sound.play('backgroundMusic');
+    // this.sound.add('backgroundMusic', { loop: true });
+    // this.sound.play('backgroundMusic');
 
     // Obstacles logic
     this.obstacles = this.physics.add.group();

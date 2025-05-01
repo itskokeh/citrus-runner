@@ -15,7 +15,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('double', 'assets');
     this.load.image('token', '/citrus-token.webp');
     this.load.spritesheet('player', 'assets');
-    this.load.audio('backgroundMusic', '/Space track.mp3');
+    // this.load.audio('backgroundMusic', '/Space track.mp3');
   }
 
   create () {
