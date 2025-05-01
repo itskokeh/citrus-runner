@@ -1,13 +1,22 @@
+import { scaleObjectToScreen, scaleValue } from '../utils/scaleObject';
+
 export default class Player {
   constructor (scene, x, y) {
     this.scene = scene;
-    this.sprite = scene.physics.add.sprite(x, y, 'player');
+    // Scale initial position
+    const baseScale = scaleObjectToScreen(scene.scale.width, scene.scale.height, null, 1);
+    const scaledX = scaleValue(x, baseScale);
+    const scaledY = scaleValue(y, baseScale);
+
+    this.sprite = scene.physics.add.sprite(scaledX, scaledY, 'player');
+    // Scale player size (0.1 is the desired size relative to screen)
+    scaleObjectToScreen(scene.scale.width, scene.scale.height, this.sprite, 0.6);
     this.sprite.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
-    // this.score.registry.set('score', this.score);
     this.airSuspension = false;
-    this.sprite.body.setGravityY(1000);
+    // Scale gravity
+    this.sprite.body.setGravityY(scaleValue(1000, baseScale));
 
     scene.input.on('pointerdown', () => {
       this.jump();
@@ -20,7 +29,9 @@ export default class Player {
   }
 
   jump () {
-    this.sprite.setVelocityY(-350);
+    // Scale jump velocity
+    const baseScale = scaleObjectToScreen(this.scene.scale.width, this.scene.scale.height, null, 1);
+    this.sprite.setVelocityY(scaleValue(-350, baseScale));
     this.suspendGravity();
   }
 
@@ -28,8 +39,9 @@ export default class Player {
     if (this.airSuspension) return;
 
     this.airSuspension = true;
-    const originalGravity = this.sprite.body.gravity.y;
-    this.sprite.body.setGravityY(400);
+    const baseScale = scaleObjectToScreen(this.scene.scale.width, this.scene.scale.height, null, 1);
+    const originalGravity = scaleValue(1000, baseScale);
+    this.sprite.body.setGravityY(scaleValue(400, baseScale));
 
     this.scene.time.delayedCall(800, () => {
       this.sprite.body.setGravityY(originalGravity);

@@ -5,8 +5,8 @@ import UIScene from './scenes/UIScene';
 
 const config = {
   type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 1280,
+  height: 720,
   parent: 'game-container',
   physics: {
     default: 'arcade',
@@ -15,7 +15,8 @@ const config = {
   scene: [PreloadScene, GameScene, UIScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
-    autocenter: Phaser.Scale.CENTER_BOTH
+    autocenter: Phaser.Scale.CENTER_BOTH,
+    orientation: Phaser.Scale.LANDSCAPE
   }
 };
 

@@ -4,6 +4,7 @@ import { spawnPowerup, applyPowerup } from '../utils/powerups';
 import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
 import { spawnCrateFormation, spawnFlyingDynamite } from '../objects/obstacles/spawner';
+import { scaleObjectToScreen } from '../utils/scaleObject';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
@@ -40,7 +41,7 @@ export default class GameScene extends Phaser.Scene {
 
     // this.sound.add('backgroundMusic', { loop: true });
     // this.sound.play('backgroundMusic');
-    const jumpSound = this.sound.add('jumpSound');
+    // const jumpSound = this.sound.add('jumpSound');
 
     // Obstacles logic
     this.obstacles = this.physics.add.group({
@@ -51,7 +52,7 @@ export default class GameScene extends Phaser.Scene {
     this.player = new Player(this, 100, 400);
     this.input.on('pointerdown', () => {
       this.player.jump();
-      jumpSound.play({ volume: 0.5 });
+      // jumpSound.play({ volume: 0.5 });
     });
 
     this.tokens = this.physics.add.group({

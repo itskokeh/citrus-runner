@@ -1,79 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="screen-orientation" content="landscape">
-  <title>Phaser 3 Endless Runner</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    canvas {
-      border: 2px solid #fff;
-    }
-  </style>
-  <!-- Phaser CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
-</head>
-<body>
-<!-- 
-  Google Sign-In button (mock) -->
-  <!-- <div id="gSignInWrapper" style="position: absolute; top: 10px; right: 10px;">
-    <button onclick="onGoogleSignIn()">Sign in with Google</button>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="screen-orientation" content="landscape" />
+    <title>Phaser 3 Endless Runner</title>
+    <link rel="stylesheet" href="./src/style.css" />
+    <!-- Phaser CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+  </head>
+  <body>
+    <!-- Canvas will be created by Phaser -->
+    <div id="game-container"></div>
+    <!-- Fallback message for portrait orientation -->
+    <div id="rotate-screen" class="orientation-warning">
+      <p>Please rotate your device to landscape mode to play.</p>
+    </div>
 
-  <script>
-    function onGoogleSignIn() {
-      alert('Google Sign-In stub triggered!');
-      // Normally you'd use gapi.auth2 here and load the Google SDK
-    }
-  </script> -->
-
-  <script>
-    // Orientation locking logic
-    function lockOrientation() {
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(err => {
-                console.warn('Orientation lock failed:', err);
-                showOrientationWarning();
-            });
-        } else {
-            console.warn('Screen Orientation API not supported');
-            showOrientationWarning();
-        }
-    }
-
-    // Show/hide orientation warning based on current orientation
-    function checkOrientation() {
-        const isLandscape = window.innerWidth > window.innerHeight || screen.orientation?.type.includes('landscape');
-        const warning = document.getElementById('orientation-warning');
-        if (!isLandscape) {
-            warning.style.display = 'flex';
-        } else {
-            warning.style.display = 'none';
-        }
-    }
-
-    // Fallback to show warning if orientation lock fails
-    function showOrientationWarning() {
-        window.addEventListener('orientationchange', checkOrientation);
-        window.addEventListener('resize', checkOrientation);
-        checkOrientation();
-    }
-
-    // Initialize orientation lock on load
-    window.addEventListener('load', () => {
-        lockOrientation();
-        checkOrientation();
-    });
-  </script>
-  <!-- Game logic -->
-  <script type="module" src="./src/main.js"></script>
-</body>
+    <script type="module" src="./src/main.js"></script>
+    <!-- Game logic -->
+  </body>
 </html>
