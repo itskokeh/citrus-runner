@@ -4,11 +4,11 @@ import './App.css';
 export default function App () {
   const requestLandscape = async () => {
     try {
-      if (screen.orientation?.lock) {
-        await screen.orientation.lock('landscape').catch(e => console.warn(e));
-      }
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen().catch(e => console.warn(e));
+      }
+      if (screen.orientation?.lock) {
+        await screen.orientation.lock('landscape').catch(e => console.warn(e));
       }
     } catch (err) {
       console.warn('could not lock orientation:', err);
