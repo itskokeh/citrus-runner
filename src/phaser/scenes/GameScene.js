@@ -1,10 +1,8 @@
 import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
-import { createObstacle } from '../objects/obstacles/obstacleFactory';
 // import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
-// import { togglePause } from '../utils/pausePlay';
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
@@ -19,8 +17,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create () {
-    // this.scene.launch('UIScene');
-
     // Background
     const { width, height } = this.scale;
     this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
@@ -38,38 +34,22 @@ export default class GameScene extends Phaser.Scene {
       this.backgrounds.push(bg);
     }
 
-    // const floorHeight = 40;
-    // // Visual layer
-    // this.floorVisual = this.add.tileSprite(
-    //   0,
-    //   this.scale.height - floorHeight,
-    //   this.scale.width,
-    //   floorHeight,
-    //   'arena-ground'
-    // ).setOrigin(0, 0);
-
-    // // Collision layer
-    // this.floorPhysics = this.physics.add.staticGroup();
-    // this.floorPhysics.create(
-    //   this.scale.width / 2,
-    //   this.scale.height - 20,
-    //   'arena-ground'
-    // ).setScale(1, 0.2).refreshBody();
-
-    // Sound logic
+    // Sound
     // this.soundManager = new SoundManager(this);
 
     // this.sound.add('backgroundMusic', { loop: true });
     // this.sound.play('backgroundMusic');
 
     // Obstacles logic
-    this.obstacles = this.physics.add.group();
+    this.obstacles = this.physics.add.group({
+      allowGravity: false
+    });
 
     // Player logic
     this.player = new Player(this, 100, 400);
-    this.input.on('pointerdown', () => {
-      this.player.jump();
-    });
+    // this.input.on('pointerdown', () => {
+    //   this.player.jump();
+    // });
 
     this.tokens = this.physics.add.group({
       allowGravity: false
@@ -171,24 +151,6 @@ export default class GameScene extends Phaser.Scene {
       }
     };
     spawnClusterToken();
-  }
-
-  spawnObstacle () {
-    const rand = Phaser.Math.Between(0, 2);
-    const x = 800;
-    const y = 300;
-
-    switch (rand) {
-      case 0:
-        createObstacle('crate', this, x, y);
-        break;
-      case 1:
-        createObstacle('flying-enemy', this, x, y - 10);
-        break;
-      case 2:
-        createObstacle('group', this, x, y, { count: 4 });
-        break;
-    }
   }
 
   handleCollision (player, obstacle) {
