@@ -3,19 +3,10 @@ import PreloadScene from './scenes/PreloadScene';
 import GameScene from './scenes/GameScene';
 import UIScene from './scenes/UIScene';
 
-function getLandscapeSize () {
-  return {
-    width: Math.max(window.innerWidth, window.innerHeight),
-    height: Math.min(window.innerWidth, window.innerHeight)
-  };
-}
-
-const { width, height } = getLandscapeSize();
-
 const config = {
   type: Phaser.AUTO,
-  width,
-  height,
+  width: 1280,
+  height: 720,
   backgroundColor: '#87ceeb',
   physics: {
     default: 'arcade',
@@ -33,10 +24,7 @@ const config = {
   }
 };
 
-const game = new Phaser.Game(config);
-
-// Handle window resize/orientation change
-window.addEventListener('resize', () => {
-  const { width, height } = getLandscapeSize();
-  game.scale.resize(width, height);
-});
+export default function initGame () {
+  return new Phaser.Game(config);
+}
+// const game = new Phaser.Game(config);
