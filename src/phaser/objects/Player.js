@@ -5,11 +5,12 @@ export default class Player {
     this.sprite.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
-    // scene.registry.set('score', 0);
-    this.maxJumps = 2;
-    this.jumpCount = 2;
     this.airSuspension = false;
     this.sprite.body.setGravityY(1000);
+
+    scene.input.on('pointerdown', () => {
+      this.jump();
+    });
   }
 
   collectToken () {
@@ -18,17 +19,8 @@ export default class Player {
   }
 
   jump () {
-    const isGrounded = this.sprite.body.blocked.down || this.sprite.body.touching.down;
-
-    // Reset jump count when grounded
-    if (isGrounded) {
-      this.jumpCount = 0;
-    }
-    if (this.jumpCount < this.maxJumps) {
-      this.sprite.setVelocityY(-500);
-      this.jumpCount++;
-      this.suspendGravity();
-    }
+    this.sprite.setVelocityY(-350);
+    this.suspendGravity();
   }
 
   suspendGravity () {
@@ -44,9 +36,5 @@ export default class Player {
     });
   }
 
-  update () {
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
-      this.jump();
-    }
-  }
+  update () {}
 }
