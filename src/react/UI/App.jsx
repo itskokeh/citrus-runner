@@ -13,8 +13,9 @@ export default function App () {
         await screen.orientation.lock('landscape');
         setIsLandscape(true);
       }
+      await loadGame();
     } catch (err) {
-      console.warn('could not lock orientation:', err);
+      console.warn('Game startup failed:', err);
     }
   };
 
@@ -42,4 +43,14 @@ export default function App () {
       {/* {Game Content} */}
     </div>
   );
+}
+
+async function loadGame () {
+  try {
+    const { default: initGame } = await import('../../phaser/main.js');
+    initGame();
+    document.getElementById('root').style.display = 'none';
+  } catch (err) {
+    console.error('Failed to load game:', err);
+  }
 }
