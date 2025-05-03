@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite",
     "lint": "eslint .",
-    "build": "vite build",
-    "serve": "vite preview"
+    "build": "vite build"
   },
   "keywords": [],
   "author": "",

@@ -2,5 +2,5 @@ import neostandard from 'neostandard';
 
 export default neostandard({
   semi: true,
-  globals: ['Phaser']
+  globals: ['Phaser', 'screen']
 });
