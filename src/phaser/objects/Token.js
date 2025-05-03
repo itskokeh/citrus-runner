@@ -1,6 +1,8 @@
 export function spawnToken (scene) {
   const xPosition = scene.scale.width + 100;
-  const yPosition = Phaser.Math.Between(400, 500);
+  const minY = 50;
+  const maxY = scene.scale.height - 50;
+  const yPosition = Phaser.Math.Between(minY, maxY);
 
   const token = scene.tokens.create(xPosition, yPosition, 'token');
   token.displayWidth = 56;
