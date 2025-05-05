@@ -1,15 +1,9 @@
 import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
 import { spawnPowerup, applyPowerup } from '../utils/powerups';
-<<<<<<< HEAD:src/scenes/GameScene.js
 import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
 import { spawnCrateFormation, spawnFlyingDynamite } from '../objects/obstacles/spawner';
-import { scaleObjectToScreen } from '../utils/scaleObject';
-=======
-// import SoundManager from '../utils/soundManager';
-import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
->>>>>>> revert-to-old-commit:src/phaser/scenes/GameScene.js
 
 export default class GameScene extends Phaser.Scene {
   constructor () {
@@ -21,13 +15,19 @@ export default class GameScene extends Phaser.Scene {
     this.obstacles = [];
     this.tokens = [];
     this.powerups = [];
+    this.gameSpeed = 2;
+    this.bgMultiplier = 0.8;
+    this.objSpeed = 70;
   }
 
   create () {
+    // Add debug render to see actual hitboxes
+    this.physics.world.createDebugGraphic();
     // Background
     const { width, height } = this.scale;
     this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
     this.bgIndex = 0;
+    // this.bgSpeed = this.gameSpeed * this.bgMultiplier;
     this.bgSpeed = 2;
 
     this.backgrounds = [];
@@ -39,22 +39,14 @@ export default class GameScene extends Phaser.Scene {
         0, 0
       ).setDisplaySize(width, height);
       this.backgrounds.push(bg);
+      // this.fitBackgroundCover(bg);
     }
 
-<<<<<<< HEAD:src/scenes/GameScene.js
-    // Sound logic
+    // Sound
     this.soundManager = new SoundManager(this);
 
     // this.sound.add('backgroundMusic', { loop: true });
     // this.sound.play('backgroundMusic');
-    // const jumpSound = this.sound.add('jumpSound');
-=======
-    // Sound
-    // this.soundManager = new SoundManager(this);
-
-    // this.sound.add('backgroundMusic', { loop: true });
-    // this.sound.play('backgroundMusic');
->>>>>>> revert-to-old-commit:src/phaser/scenes/GameScene.js
 
     // Obstacles logic
     this.obstacles = this.physics.add.group({
@@ -63,70 +55,58 @@ export default class GameScene extends Phaser.Scene {
 
     // Player logic
     this.player = new Player(this, 100, 400);
-<<<<<<< HEAD:src/scenes/GameScene.js
     this.input.on('pointerdown', () => {
       this.player.jump();
-      // jumpSound.play({ volume: 0.5 });
     });
-=======
-    // this.input.on('pointerdown', () => {
-    //   this.player.jump();
-    // });
->>>>>>> revert-to-old-commit:src/phaser/scenes/GameScene.js
 
-    this.tokens = this.physics.add.group({
+    this.tokens = this.add.group();
+
+    this.powerups = this.physics.add.group({
       allowGravity: false
     });
-    this.powerups = this.physics.add.group();
 
     this.createTokenCluster();
+
     this.powerupTimer = this.time.addEvent({
-      delay: 10000,
+      delay: 3000,
       callback: () => spawnPowerup(this),
       loop: true
     });
 
+    console.log('Dynamite texture exists:', this.textures.exists('flying-dynamite'));
     this.time.addEvent({
-      delay: Phaser.Math.Between(1000, 3000), // initial delay
-      callback: () => {
-        const spawnFn = Phaser.Math.RND.pick([
-          spawnCrateFormation,
-          spawnFlyingDynamite
-        ]);
-
-        spawnFn(this);
-
-        // Re-schedule again with random delay
-        this.time.addEvent({
-          delay: Phaser.Math.Between(1000, 3000),
-          callback: this.spawnObstacleEvent, // recursively call itself
-          callbackScope: this
-        });
-      },
-      callbackScope: this
-    });
-
-    this.time.addEvent({
-      delay: 1500,
-      callback: () => spawnFlyingDynamite(this),
+      delay: 3000,
+      callback: this.spawnObstacle,
+      callbackScope: this,
       loop: true
     });
 
-    // this.physics.add.collider(this.player.sprite, this.floorPhysics);
     this.physics.add.overlap(this.player.sprite, this.tokens, (_, token) => {
-      token.destroy();
+      token.disableBody(true, true);
       this.player.collectToken();
     });
+
     this.physics.add.overlap(this.player.sprite, this.powerups, (_, powerup) => {
-      applyPowerup(this.player, powerup.texture.key);
+      applyPowerup(this.player, powerup);
       powerup.destroy();
     });
-    this.physics.add.overlap(this.player, this.obstacles, this.handleCollision, null, this);
+    // this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
+    //   obstacle.destroy();
+    //   this.player.destroy();
+    //   this.scene.restart();
+    // });
 
-    // Remove existing resize listener to prevent conflicts
-    this.scale.off('resize');
-    // Ensure canvas fills screen in landscape
-    this.scale.setGameSize(window.innerWidth, window.innerHeight);
+    // Increase game speed
+    // this.time.addEvent({
+    //   delay: 10000,
+    //   callback: () => {
+    //     this.gameSpeed += 0.1;
+    //     this.bgMultiplier = (this.bgMultiplier * 102) / 100;
+    //     this.objSpeed = (this.objSpeed * 105) / 100;
+    //     this.updateSpeeds();
+    //   },
+    //   loop: true
+    // });
   }
 
   getNextBg () {
@@ -139,6 +119,18 @@ export default class GameScene extends Phaser.Scene {
       return bg.x > rightmost.x ? bg : rightmost;
     }, this.backgrounds[0]);
   }
+
+  // fitBackgroundCover (image) {
+  //   const { width, height } = this.scale;
+
+  //   const scaleX = width / image.width;
+  //   const scaleY = height / image.height;
+  //   const scale = Math.min(scaleX, scaleY); // 'cover' behavior
+
+  //   image.setScale(scale);
+  //   image.setOrigin(0.5);
+  //   image.setPosition(width / 2, height / 2);
+  // }
 
   togglePause () {
     this.isPaused = !this.isPaused;
@@ -158,22 +150,6 @@ export default class GameScene extends Phaser.Scene {
 
       this.scene.resume('GameScene');
     }
-  }
-
-  spawnObstacleEvent () {
-    const spawnFn = Phaser.Math.RND.pick([
-      spawnCrateFormation,
-      spawnFlyingDynamite
-    ]);
-
-    spawnFn(this);
-
-    // Re-schedule again with random delay
-    this.time.addEvent({
-      delay: Phaser.Math.Between(1000, 3000),
-      callback: this.spawnObstacleEvent, // recursively call itself
-      callbackScope: this
-    });
   }
 
   pauseGame () {
@@ -206,25 +182,64 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
+  // createTokenCluster () {
+  //   const clusterSize = Phaser.Math.Between(3, 6);
+  //   let tokensSpawned = 0;
+
+  //   const spawnClusterToken = () => {
+  //     if (tokensSpawned < clusterSize) {
+  //       spawnToken(this);
+  //       tokensSpawned++;
+  //       this.time.delayedCall(200, spawnClusterToken);
+  //     } else {
+  //       this.time.delayedCall(3000, () => this.createTokenCluster());
+  //     }
+  //   };
+  //   spawnClusterToken();
+  // }
+
   createTokenCluster () {
     const clusterSize = Phaser.Math.Between(3, 6);
-    let tokensSpawned = 0;
 
-    const spawnClusterToken = () => {
-      if (tokensSpawned < clusterSize) {
-        spawnToken(this);
-        tokensSpawned++;
-        this.time.delayedCall(200, spawnClusterToken);
-      } else {
-        this.time.delayedCall(3000, () => this.createTokenCluster());
-      }
-    };
-    spawnClusterToken();
+    // Clear any existing delayed calls
+    if (this.clusterTimer) this.clusterTimer.remove();
+
+    // Spawn initial cluster
+    for (let i = 0; i < clusterSize; i++) {
+      this.time.delayedCall(i * 200, () => spawnToken(this));
+    }
+
+    // Schedule next cluster
+    this.clusterTimer = this.time.delayedCall(3000 + (clusterSize * 200), () => {
+      this.createTokenCluster();
+    });
   }
 
-  handleCollision (player, obstacle) {
-    this.scene.restart();
+  spawnObstacle () {
+    const choice = Phaser.Math.Between(0, 1);
+    if (choice === 0) {
+      spawnCrateFormation(this);
+    } else {
+      spawnFlyingDynamite(this);
+    }
   }
+
+  updateSpeeds () {
+    this.powerups.children.each(obj => {
+      obj.setVelocityX(-this.gameSpeed * this.objectsSpeed);
+    });
+    this.tokens.children.each(obj => {
+      obj.setVelocityX(-this.gameSpeed * this.objSpeed);
+    });
+    this.obstacles.children.each(obj => {
+      obj.setVelocityX(-this.gameSpeed * this.objSpeed);
+    });
+  }
+
+  // handleCollision (player, obstacle) {
+  //   this.obstacles.destroy();
+  //   this.scene.restart();
+  // }
 
   update (time, delta) {
     if (this.isPaused) return;
@@ -244,22 +259,5 @@ export default class GameScene extends Phaser.Scene {
         bg.setTexture(this.getNextBg());
       }
     }
-
-    // Move tokens and powerups left
-    this.tokens.children.iterate(token => {
-      if (!token) return;
-      token.x -= 4;
-      if (token.x < -token.width) {
-        token.destroy();
-      }
-    });
-
-    this.powerups.children.iterate(powerup => {
-      if (!powerup) return;
-      powerup.x -= 4;
-      if (powerup.x < -powerup.width) {
-        powerup.destroy();
-      }
-    });
   }
 }
