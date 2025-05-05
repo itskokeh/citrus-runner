@@ -12,15 +12,10 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('crate', '/obstacles/crate.webp');
     this.load.image('flying-dynamite', '/obstacles/flying-dynamite.webp');
     this.load.image('magnet', '/powerups/magnet.webp');
-    this.load.image('double', 'assets');
+    this.load.image('double', '/powerups/double-coin.webp');
     this.load.image('token', '/citrus-token.webp');
     this.load.spritesheet('player', 'assets');
-<<<<<<< HEAD:src/scenes/PreloadScene.js
-    // this.load.audio('backgroundMusic', '');
-    // this.load.audio('jumpSound', '/audio/jump.wav');
-=======
     // this.load.audio('backgroundMusic', '/Space track.mp3');
->>>>>>> revert-to-old-commit:src/phaser/scenes/PreloadScene.js
   }
 
   create () {
