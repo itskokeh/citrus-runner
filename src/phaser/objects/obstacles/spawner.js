@@ -1,66 +1,31 @@
-// import createCrate from './crate';
-// import createFlyingEnemy from './flyingEnemy';
-
-// export function spawnCrateFormation (scene) {
-//   console.log('Spawning crate formation');
-//   const xPosition = scene.scale.width + 100;
-
-//   const patterns = [
-//     [500],
-//     [400],
-//     [300],
-//     [500, 400],
-//     [500, 400, 300],
-//     [500, 400, 300, 200],
-//     [500, 400, 300, 200, 100]
-//   ];
-
-//   const formation = Phaser.Utils.Array.GetRandom(patterns); // Add 300 if you want a 3rd one
-
-//   formation.forEach(y => {
-//     createCrate(scene, xPosition, y, { speed: -200 });
-//   });
-// }
-
-// export function spawnFlyingDynamite (scene) {
-//   console.log('Spawning flying dynamite');
-//   const xPosition = scene.scale.width + 100;
-//   const yPosition = Phaser.Math.Between(200, 500);
-
-//   createFlyingEnemy(scene, xPosition, yPosition, { speed: -300 });
-// }
-
 import createCrate from './crate';
 import createFlyingEnemy from './flyingEnemy';
-import { scaleObjectToScreen, scaleValue } from '../../utils/scaleObject';
 
 export function spawnCrateFormation (scene) {
-  console.log('Spawning crate formation');
-  const baseScale = scaleObjectToScreen(scene.scale.width, scene.scale.height, scene, 1);
-  const xPosition = scaleValue(scene.scale.width + 100, baseScale);
+  const xPosition = scene.scale.width + 100;
 
-  const patterns = [
-    [500],
-    [400],
-    [300],
-    [500, 400],
-    [500, 400, 300],
-    [500, 400, 300, 200],
-    [500, 400, 300, 200, 100]
-  ];
+  const crateHeight = 48; // Matches createCrate default height
+  const padding = 50; // Padding from bottom
+  const baseY = scene.scale.height - padding;
 
-  const formation = Phaser.Utils.Array.GetRandom(patterns);
+  // Dynamically determine how many crates can fit
+  const maxCrates = Math.floor((scene.scale.height - 2 * padding) / crateHeight);
+  const stackSize = Phaser.Math.Between(1, maxCrates);
+
+  // Build Y positions for stacked crates from bottom up
+  const formation = Array.from({ length: stackSize }, (_, i) => baseY - i * crateHeight);
 
   formation.forEach(y => {
-    createCrate(scene, xPosition, scaleValue(y, baseScale), { speed: -200 });
+    createCrate(scene, xPosition, y);
   });
 }
 
 export function spawnFlyingDynamite (scene) {
-  console.log('Spawning flying dynamite');
-  const baseScale = scaleObjectToScreen(scene.scale.width, scene.scale.height, scene, 1);
-  const xPosition = scaleValue(scene.scale.width + 100, baseScale);
-  const yPosition = scaleValue(Phaser.Math.Between(200, 500), baseScale);
+  const xPosition = scene.scale.width + 100;
 
-  createFlyingEnemy(scene, xPosition, yPosition, { speed: -300 });
+  const minY = 100; // padding from top
+  const maxY = scene.scale.height - 200; // padding from bottom
+  const yPosition = Phaser.Math.Between(minY, maxY);
+
+  createFlyingEnemy(scene, xPosition, yPosition);
 }
