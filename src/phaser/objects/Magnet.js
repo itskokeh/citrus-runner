@@ -4,15 +4,17 @@ export function magnet (scene) {
   const maxY = scene.scale.height - 50;
   const yPosition = Phaser.Math.Between(minY, maxY);
 
-  const powerup = scene.powerups.create(xPosition, yPosition, 'magnet');
+  const powerup = scene.physics.add.sprite(xPosition, yPosition, 'magnet');
+  scene.powerups.add(powerup);
 
   const targetWidth = 50;
+  const targetHeight = targetWidth * (powerup.height / powerup.width);
   powerup.displayWidth = targetWidth;
-  powerup.displayHeight = targetWidth * (powerup.height / powerup.width);
+  powerup.displayHeight = targetHeight;
 
   powerup.setVelocityX(-scene.gameSpeed * scene.objSpeed);
   powerup.setCollideWorldBounds(false);
-  powerup.setImmovable(true);
+  powerup.body.setAllowGravity(false);
 
   powerup.type = 'magnet';
   return powerup;

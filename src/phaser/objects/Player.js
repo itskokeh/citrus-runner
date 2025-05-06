@@ -1,29 +1,19 @@
-import { scaleObjectToScreen, scaleValue } from '../utils/scaleObject';
-
 export default class Player {
   constructor (scene, x, y) {
     this.scene = scene;
-    // Scale initial position
-    const baseScale = scaleObjectToScreen(scene.scale.width, scene.scale.height, null, 1);
-    const scaledX = scaleValue(x, baseScale);
-    const scaledY = scaleValue(y, baseScale);
-
-    this.sprite = scene.physics.add.sprite(scaledX, scaledY, 'player');
-    // Scale player size (0.1 is the desired size relative to screen)
-    scaleObjectToScreen(scene.scale.width, scene.scale.height, this.sprite, 0.6);
-    this.sprite.setCollideWorldBounds(true);
+    this.sprite = scene.physics.add.sprite(x, y, 'player');
+    this.sprite.body.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
+    this.hasMagnet = false;
+    this.doubleCoins = false;
     this.airSuspension = false;
     this.sprite.body.setGravityY(1000);
-
-    scene.input.on('pointerdown', () => {
-      this.jump();
-    });
   }
 
   collectToken () {
-    this.score += this.doubleCoins ? 2 : 1;
+    const pointsToAdd = this.doubleCoins ? 2 : 1;
+    this.score += pointsToAdd;
     this.scene.registry.set('score', this.score);
   }
 
@@ -36,9 +26,8 @@ export default class Player {
     if (this.airSuspension) return;
 
     this.airSuspension = true;
-    const baseScale = scaleObjectToScreen(this.scene.scale.width, this.scene.scale.height, null, 1);
-    const originalGravity = scaleValue(1000, baseScale);
-    this.sprite.body.setGravityY(scaleValue(400, baseScale));
+    const originalGravity = this.sprite.body.gravity.y;
+    this.sprite.body.setGravityY(400);
 
     this.scene.time.delayedCall(800, () => {
       this.sprite.body.setGravityY(originalGravity);
@@ -46,5 +35,32 @@ export default class Player {
     });
   }
 
-  update () {}
+  applyMagnetEffect () {
+    const tokens = this.scene.tokens.getChildren();
+    const horizontalOffset = 400; // how far ahead to attract
+    const verticalRange = this.scene.scale.height; // full vertical span of effect
+
+    const playerX = this.sprite.x;
+    const playerY = this.sprite.y;
+
+    tokens.forEach(token => {
+      if (!token.active) return;
+
+      const inXRange = token.x > playerX && token.x < playerX + horizontalOffset;
+      const inYRange = Math.abs(token.y - playerY) <= verticalRange / 2;
+
+      if (inXRange && inYRange) {
+        const angle = Phaser.Math.Angle.Between(token.x, token.y, playerX, playerY);
+        const pullSpeed = 1000;
+        token.body.velocity.x = Math.cos(angle) * pullSpeed;
+        token.body.velocity.y = Math.sin(angle) * pullSpeed;
+      }
+    });
+  }
+
+  update () {
+    if (this.hasMagnet) {
+      this.applyMagnetEffect();
+    }
+  }
 }
