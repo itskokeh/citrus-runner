@@ -61,9 +61,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.tokens = this.add.group();
 
-    this.powerups = this.physics.add.group({
-      allowGravity: false
-    });
+    this.powerups = this.add.group();
 
     this.createTokenCluster();
 
@@ -73,7 +71,6 @@ export default class GameScene extends Phaser.Scene {
       loop: true
     });
 
-    console.log('Dynamite texture exists:', this.textures.exists('flying-dynamite'));
     this.time.addEvent({
       delay: 3000,
       callback: this.spawnObstacle,
@@ -82,7 +79,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(this.player.sprite, this.tokens, (_, token) => {
-      token.disableBody(true, true);
+      token.destroy();
       this.player.collectToken();
     });
 
@@ -97,16 +94,16 @@ export default class GameScene extends Phaser.Scene {
     // });
 
     // Increase game speed
-    // this.time.addEvent({
-    //   delay: 10000,
-    //   callback: () => {
-    //     this.gameSpeed += 0.1;
-    //     this.bgMultiplier = (this.bgMultiplier * 102) / 100;
-    //     this.objSpeed = (this.objSpeed * 105) / 100;
-    //     this.updateSpeeds();
-    //   },
-    //   loop: true
-    // });
+    this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+        this.gameSpeed += 0.1;
+        this.bgMultiplier = (this.bgMultiplier * 102) / 100;
+        this.objSpeed = (this.objSpeed * 105) / 100;
+        this.updateSpeeds();
+      },
+      loop: true
+    });
   }
 
   getNextBg () {
@@ -182,22 +179,6 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  // createTokenCluster () {
-  //   const clusterSize = Phaser.Math.Between(3, 6);
-  //   let tokensSpawned = 0;
-
-  //   const spawnClusterToken = () => {
-  //     if (tokensSpawned < clusterSize) {
-  //       spawnToken(this);
-  //       tokensSpawned++;
-  //       this.time.delayedCall(200, spawnClusterToken);
-  //     } else {
-  //       this.time.delayedCall(3000, () => this.createTokenCluster());
-  //     }
-  //   };
-  //   spawnClusterToken();
-  // }
-
   createTokenCluster () {
     const clusterSize = Phaser.Math.Between(3, 6);
 
@@ -226,7 +207,7 @@ export default class GameScene extends Phaser.Scene {
 
   updateSpeeds () {
     this.powerups.children.each(obj => {
-      obj.setVelocityX(-this.gameSpeed * this.objectsSpeed);
+      obj.setVelocityX(-this.gameSpeed * this.objSpeed);
     });
     this.tokens.children.each(obj => {
       obj.setVelocityX(-this.gameSpeed * this.objSpeed);
