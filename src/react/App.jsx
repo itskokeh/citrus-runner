@@ -47,7 +47,7 @@ export default function App () {
 
 async function loadGame () {
   try {
-    const { default: initGame } = await import('../../phaser/main.js');
+    const { default: initGame } = await import('../phaser/main.js');
     initGame();
     document.getElementById('root').style.display = 'none';
   } catch (err) {
