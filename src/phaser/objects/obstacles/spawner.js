@@ -1,5 +1,5 @@
 import createCrate from './crate';
-import createFlyingEnemy from './flyingEnemy';
+import createFlyingEnemy from './flyingDynamite';
 
 export function spawnCrateFormation (scene) {
   const xPosition = scene.scale.width + 100;
