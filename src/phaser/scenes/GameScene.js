@@ -1,6 +1,6 @@
 import Player from '../objects/Player';
 import { spawnToken } from '../objects/Token';
-import { spawnPowerup, applyPowerup } from '../utils/powerups';
+import { spawnPowerup, applyPowerup } from '../objects/powerups/spawner';
 import SoundManager from '../utils/soundManager';
 import { pauseVelocity, resumeVelocity } from '../utils/velocityManager';
 import { spawnCrateFormation, spawnFlyingDynamite } from '../objects/obstacles/spawner';
