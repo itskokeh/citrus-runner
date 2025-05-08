@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
+import { BedrockPassportProvider, useBedrockPassport, LoginPanel } from '@bedrock_org/passport';
+import '@bedrock_org/passport/dist/style.css';
 import './App.css';
 
-export default function App () {
+// Wrap your main app with the Bedrock provider
+function AppWrapper () {
+  return (
+    <BedrockPassportProvider
+      baseUrl='https://api.bedrockpassport.com'
+      authCallbackUrl='https://endless-runner-steel.vercel.app/auth/callback'
+      tenantId='orange-lnzb7mm3wy' // Replace with your actual tenant ID
+      subscriptionKey='ee85e16ceba64e279a1811582221b1ff'
+    >
+      <App />
+    </BedrockPassportProvider>
+  );
+}
+
+function App () {
   const [isLandscape, setIsLandscape] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { isLoggedIn } = useBedrockPassport();
 
   useEffect(() => {
     // Check if device is mobile
@@ -46,6 +63,30 @@ export default function App () {
     }
   };
 
+  // Show login panel if not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className='auth-container'>
+        <LoginPanel
+          title='Sign in to play'
+          logo='https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg'
+          logoAlt='Orange Web3'
+          walletButtonText='Connect Wallet'
+          showConnectWallet={false}
+          separatorText='OR'
+          features={{
+            enableWalletConnect: false,
+            enableAppleLogin: true,
+            enableGoogleLogin: true,
+            enableEmailLogin: false,
+          }}
+          panelClass='bg-white p-8 rounded-lg shadow-lg max-w-md w-full'
+          buttonClass='hover:border-orange-500'
+        />
+      </div>
+    );
+  }
+
   return (
     <div className='game-container'>
       {!isLandscape
@@ -56,7 +97,9 @@ export default function App () {
           </div>
           )
         : (
-          <button onClick={returnToPortrait}>Exit to Home</button>
+          <div className='game-controls'>
+            <button onClick={returnToPortrait}>Exit to Home</button>
+          </div>
           )}
     </div>
   );
@@ -71,3 +114,5 @@ async function loadGame () {
     console.error('Failed to load game:', err);
   }
 }
+
+export default AppWrapper;
