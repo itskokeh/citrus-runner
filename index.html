@@ -16,27 +16,13 @@
         align-items: center;
         height: 100vh;
       }
-      canvas {
-        border: 2px solid #fff;
-      }
     </style>
     <!-- Phaser CDN -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
   </head>
   <body>
-    <!-- Google Sign-In button (mock) -->
-    <div id="gSignInWrapper" style="position: absolute; top: 10px; right: 10px">
-      <button onclick="onGoogleSignIn()">Sign in with Google</button>
-    </div>
-
-    <script>
-      function onGoogleSignIn() {
-        alert("Google Sign-In stub triggered!");
-        // Normally you'd use gapi.auth2 here and load the Google SDK
-      }
-    </script>
-
+    <div id="root"></div>
     <!-- Game logic -->
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/react/main.jsx"></script>
   </body>
 </html>

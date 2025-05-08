@@ -1,3 +1,26 @@
-p {
+.game-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.landscape-prompt {
+  text-align: center;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background: #4CAF50;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #45a049;
 }
