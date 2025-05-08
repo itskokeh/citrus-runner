@@ -4,6 +4,9 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['react', 'react-dom']
+  },
 
   build: {
     emptyOutDir: true,
@@ -19,6 +22,7 @@ export default defineConfig({
         entryFileNames: '[name]/[name]-[hash].js',
         assetFileNames: '[name]/assets/[name]-[hash].[ext]'
       }
-    }
+    },
+    sourcemap: false,
   }
 });
