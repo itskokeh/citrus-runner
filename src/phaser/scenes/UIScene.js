@@ -6,24 +6,34 @@ export default class UIScene extends Phaser.Scene {
   create () {
     console.log('UIScene loaded');
 
-    const muteButton = this.add.text(10, 10, 'Mute', {
-      font: '24px Arial',
-      fill: '#fff'
-    }).setInteractive();
-
-    const padding = 10;
-    muteButton.setPosition(this.cameras.main.width - muteButton.width - padding, padding);
-
     const gameScene = this.scene.get('GameScene');
     const soundManager = gameScene.soundManager;
+    const padding = 10;
+    const muteButton = this.add.image(
+      this.cameras.main.width - padding,
+      padding,
+      soundManager.isMuted ? 'unmute-icon' : 'mute-icon'
+    ).setOrigin(
+      1, 0
+    ).setScale(
+      1
+    ).setInteractive();
+    // muteButton.setPosition(this.cameras.main.width - muteButton.width - padding, padding);
 
     muteButton.on('pointerdown', () => {
       soundManager.toggleMute();
-      muteButton.setText(soundManager.isMuted ? 'Unmute' : 'Mute');
+      // Verify textures exist before switching
+      const newTexture = soundManager.isMuted ? 'unmute-icon' : 'mute-icon';
+      if (this.textures.exists(newTexture)) {
+        muteButton.setTexture(newTexture);
+      } else {
+        console.error(`Texture "${newTexture}" not found!`);
+        // Fallback to text if images fail
+        muteButton.setTexture(soundManager.isMuted ? 'unmute-icon' : 'mute-icon');
+      }
     });
-
     // Optional: set initial text correctly
-    muteButton.setText(soundManager.isMuted ? 'Unmute' : 'Mute');
+    // muteButton.setText(soundManager.isMuted ? 'Unmute' : 'Mute');
 
     // Inside UIScene.js, in create()
     const centerX = this.cameras.main.width / 2;
