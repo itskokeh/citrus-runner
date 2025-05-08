@@ -9,26 +9,26 @@ export function spawnPowerup (scene) {
   randomPowerup(scene);
 }
 
-// export function applyPowerup (player, type) {
-//   if (player[`${type}Tween`]) {
-//     player[`${type}Tween`].remove();
-//   }
+export function applyPowerup (player, type) {
+  if (player[`${type}Tween`]) {
+    player[`${type}Tween`].remove();
+  }
 
-//   switch (type) {
-//     case 'magnet':
-//       player.hasMagnet = true;
-//       break;
-//     case 'double-coin':
-//       player.doubleCoins = true;
-//       break;
-//   }
+  switch (type) {
+    case 'magnet':
+      player.hasMagnet = true;
+      break;
+    case 'double-coin':
+      player.doubleCoins = true;
+      break;
+  }
 
-//   player[`${type}Tween`] = player.scene.tweens.addCounter({
-//     duration: 15000,
-//     onComplete: () => {
-//       if (type === 'magnet') player.hasMagnet = false;
-//       if (type === 'double-coin') player.doubleCoins = false;
-//       player[`${type}Tween`] = null;
-//     }
-//   });
-// }
+  player[`${type}Tween`] = player.scene.tweens.addCounter({
+    duration: 15000,
+    onComplete: () => {
+      if (type === 'magnet') player.hasMagnet = false;
+      if (type === 'double-coin') player.doubleCoins = false;
+      player[`${type}Tween`] = null;
+    }
+  });
+}

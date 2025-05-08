@@ -84,7 +84,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(this.player.sprite, this.powerups, (_, powerup) => {
-      applyPowerup(this.player, powerup);
+      applyPowerup(this.player, powerup.type);
       powerup.destroy();
     });
     // this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
