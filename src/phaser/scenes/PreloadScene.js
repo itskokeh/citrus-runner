@@ -4,7 +4,7 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.font('SpaceGrotesk', '../assets/fonts/SpaceGrotesk-Bold.ttf');
+    this.load.font('SpaceGrotesk', '/fonts/SpaceGrotesk-Bold.ttf');
     this.load.image('pause-icon', '/icons/pause_24dp_FFF.png');
     this.load.image('play-icon', '/icons/play_24dp_FFF.png');
     this.load.image('arena-1', '/arcade-1.webp');
