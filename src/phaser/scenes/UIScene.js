@@ -44,7 +44,7 @@ export default class UIScene extends Phaser.Scene {
       .setVisible(false)
       .on('pointerdown', () => this.togglePause());
 
-    this.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '20px', fill: 'white' });
+    this.scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '20px', fill: 'white', fontFamily: 'SpaceGrotesk' });
 
     this.registry.events.on('changedata', (parent, key, data) => {
       if (key === 'score') {
