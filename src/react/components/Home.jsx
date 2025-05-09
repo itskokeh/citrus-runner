@@ -1,5 +1,6 @@
 import { useBedrockPassport, LoginPanel } from '@bedrock_org/passport';
 import '@bedrock_org/passport/dist/style.css';
+import '../index.css';
 import { useState } from 'react';
 
 function Home () {
