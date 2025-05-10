@@ -1,6 +1,5 @@
 import { useBedrockPassport, LoginPanel } from '@bedrock_org/passport';
-import '@bedrock_org/passport/dist/style.css';
-import '../index.css';
+import './Home.css';
 import { useState } from 'react';
 
 function Home () {
@@ -20,7 +19,7 @@ function Home () {
 
   const handleLogout = async () => {
     await signOut();
-    window.location.href = '/'; // Redirect to home after logout
+    window.location.href = '/';
   };
 
   if (gameStarted) {
@@ -28,47 +27,43 @@ function Home () {
   }
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100'>
+    <div className='auth-container'>
       {!isLoggedIn
         ? (
           <LoginPanel
-            title='Sign in to Endless Runner'
-            logo='https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg'
-            logoAlt='Orange Web3'
+            buttonClass='login-button'
+            headerClass='login-panel-header'
+            title='Sign in to play Zero-G Hopper'
+            logo='/orange-web3-logo-v2a-20241018.svg'
+            logoClass='login-panel-logo'
+            panelClass='login-panel'
             walletButtonText='Connect Wallet'
-            showConnectWallet={false}
             separatorText='OR'
+            separatorTextClass='separator-text'
+            separatorClass='separator'
             features={{
               enableWalletConnect: false,
               enableAppleLogin: true,
               enableGoogleLogin: true,
-              enableEmailLogin: false,
+              enableEmailLogin: true,
             }}
-            titleClass='text-xl font-bold'
-            logoClass='ml-2 md:h-8 h-6'
-            panelClass='container p-2 md:p-8 rounded-2xl max-w-[480px] bg-white shadow-lg'
-            buttonClass='hover:border-orange-500'
-            separatorTextClass='bg-orange-900 text-gray-500'
-            separatorClass='bg-orange-900'
-            linkRowClass='justify-center'
-            headerClass='justify-center'
           />
           )
         : (
-          <div className='text-center'>
-            <h1 className='text-2xl font-bold mb-4'>
+          <div className='logged-in-container'>
+            <h1 className='logged-in-title'>
               Welcome, {user?.displayName || user?.name || 'User'}!
             </h1>
-            <p className='mb-4'>Ready to play Endless Runner?</p>
+            <p className='logged-in-text'>Ready to play Endless Runner?</p>
             <button
               onClick={handleStartGame}
-              className='bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600'
+              className='primary-button'
             >
               Start Game
             </button>
             <button
               onClick={handleLogout}
-              className='ml-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600'
+              className='secondary-button'
             >
               Log Out
             </button>

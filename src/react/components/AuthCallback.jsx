@@ -8,7 +8,7 @@ function AuthCallback () {
     const login = async (token, refreshToken) => {
       const success = await loginCallback(token, refreshToken);
       if (success) {
-        window.location.href = '/'; // Redirect to home or game lobby
+        window.location.href = '/';
       } else {
         console.error('Login callback failed');
       }

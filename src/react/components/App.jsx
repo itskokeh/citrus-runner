@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './Home'; // Your main page with LoginPanel
+import Home from './Home';
 import AuthCallback from './AuthCallback';
 
 function App () {
