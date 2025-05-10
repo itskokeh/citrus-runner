@@ -20,6 +20,7 @@
   font-size: 1.5rem; /* text-2xl */
   font-weight: 700; /* font-bold */
   margin-bottom: 1rem; /* mb-4 */
+  color: white;
 }
 
 .logged-in-text {
