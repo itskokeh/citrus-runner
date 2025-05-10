@@ -2,7 +2,7 @@ import { useBedrockPassport, LoginPanel } from '@bedrock_org/passport';
 import './Home.css';
 import { useState } from 'react';
 
-function Home () {
+export default function Home () {
   const { isLoggedIn, signOut, user } = useBedrockPassport();
   const [gameStarted, setGameStarted] = useState(false);
 
@@ -15,6 +15,7 @@ function Home () {
     }
     // Initialize or show your Phaser game here
     // e.g., initializePhaserGame();
+    loadGame();
   };
 
   const handleLogout = async () => {
@@ -54,7 +55,7 @@ function Home () {
             <h1 className='logged-in-title'>
               Welcome, {user?.displayName || user?.name || 'User'}!
             </h1>
-            <p className='logged-in-text'>Ready to play Endless Runner?</p>
+            <p className='logged-in-text'>Ready to play Zero-G Hopper?</p>
             <button
               onClick={handleStartGame}
               className='primary-button'
@@ -73,4 +74,12 @@ function Home () {
   );
 }
 
-export default Home;
+async function loadGame () {
+  try {
+    const { default: initGame } = await import('../../phaser/main.js');
+    initGame();
+    document.getElementById('root').style.display = 'none';
+  } catch (err) {
+    console.error('Failed to load game:', err);
+  }
+}
