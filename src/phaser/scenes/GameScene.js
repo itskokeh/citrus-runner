@@ -45,18 +45,18 @@ export default class GameScene extends Phaser.Scene {
     // Sound
     this.soundManager = new SoundManager(this);
 
-    // this.sound.add('backgroundMusic', { loop: true });
-    // this.sound.play('backgroundMusic');
+    this.sound.add('backgroundMusic', { loop: true });
+    this.sound.play('backgroundMusic');
+    const jumpSound = this.sound.add('jump');
 
     // Obstacles logic
-    this.obstacles = this.physics.add.group({
-      allowGravity: false
-    });
+    this.obstacles = this.add.group();
 
     // Player logic
     this.player = new Player(this, 100, 400);
     this.input.on('pointerdown', () => {
       this.player.jump();
+      jumpSound.play({ volume: 0.05 });
     });
 
     this.tokens = this.add.group();
@@ -66,7 +66,7 @@ export default class GameScene extends Phaser.Scene {
     this.createTokenCluster();
 
     this.powerupTimer = this.time.addEvent({
-      delay: 3000,
+      delay: 30000,
       callback: () => spawnPowerup(this),
       loop: true
     });
@@ -87,11 +87,11 @@ export default class GameScene extends Phaser.Scene {
       applyPowerup(this.player, powerup.type);
       powerup.destroy();
     });
-    // this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
-    //   obstacle.destroy();
-    //   this.player.destroy();
-    //   this.scene.restart();
-    // });
+    this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
+      obstacle.destroy();
+      this.player.destroy();
+      this.scene.restart();
+    });
 
     // Increase game speed
     this.time.addEvent({
