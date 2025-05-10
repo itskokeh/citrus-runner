@@ -1,7 +1,11 @@
 export default class Player {
   constructor (scene, x, y) {
     this.scene = scene;
-    this.sprite = scene.physics.add.sprite(x, y, 'player');
+    this.sprite = scene.physics.add.image(x, y, 'player');
+    const targetWidth = 50;
+    const targetHeight = targetWidth * (this.sprite.height / this.sprite.width);
+    this.sprite.displayHeight = targetHeight;
+    this.sprite.displayWidth = targetWidth;
     this.sprite.body.setCollideWorldBounds(true);
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.score = 0;
