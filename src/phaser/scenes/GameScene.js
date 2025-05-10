@@ -22,7 +22,7 @@ export default class GameScene extends Phaser.Scene {
 
   create () {
     // Add debug render to see actual hitboxes
-    this.physics.world.createDebugGraphic();
+    // this.physics.world.createDebugGraphic();
     // Background
     const { width, height } = this.scale;
     this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
