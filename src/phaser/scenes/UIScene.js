@@ -1,3 +1,5 @@
+import quitGame from '../utils/quitGame';
+
 export default class UIScene extends Phaser.Scene {
   constructor () {
     super('UIScene');
@@ -20,7 +22,7 @@ export default class UIScene extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.stop('GameScene');
-        this.scene.start('MainMenuScene');
+        quitGame();
       });
 
     // --- Mute Button (Middle) ---
