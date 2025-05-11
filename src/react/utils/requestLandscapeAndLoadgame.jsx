@@ -16,29 +16,29 @@ export default async function requestLandscapeAndLoadGame () {
         );
       }
     }
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.style.display = 'block';
 
     // Load the Phaser game
     const { default: initGame } = await import('../../phaser/main.js');
     initGame();
 
-    const gameContainer = document.getElementById('game-container');
     const reactRoot = document.getElementById('root');
     if (reactRoot) {
       reactRoot.style.display = 'none';
-      gameContainer.style.display = 'block';
     }
   } catch (err) {
     console.warn('Game startup failed:', err);
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.style.display = 'block';
 
     // Fallback: load the game anyway
     const { default: initGame } = await import('../../phaser/main.js');
     initGame();
 
-    const gameContainer = document.getElementById('game-container');
     const reactRoot = document.getElementById('root');
     if (reactRoot) {
       reactRoot.style.display = 'none';
-      gameContainer.style.display = 'block';
     }
   }
 }
