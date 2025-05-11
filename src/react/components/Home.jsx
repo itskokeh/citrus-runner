@@ -1,31 +1,21 @@
 import { useBedrockPassport, LoginPanel } from '@bedrock_org/passport';
+import requestLandscapeAndLoadgame from '../utils/requestLandscapeAndLoadgame';
 import './Home.css';
 import { useState } from 'react';
 
-export default function Home () {
+export default async function Home () {
   const { isLoggedIn, signOut, user } = useBedrockPassport();
   const [gameStarted, setGameStarted] = useState(false);
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
     setGameStarted(true);
-    // Hide React app for Phaser game
-    const reactRoot = document.getElementById('root');
-    if (reactRoot) {
-      reactRoot.style.display = 'none';
-    }
-    // Initialize or show your Phaser game here
-    // e.g., initializePhaserGame();
-    loadGame();
+    await requestLandscapeAndLoadgame();
   };
 
   const handleLogout = async () => {
     await signOut();
     window.location.href = '/';
   };
-
-  if (gameStarted) {
-    return <div>Game is running...</div>;
-  }
 
   return (
     <div className='auth-container'>
@@ -72,14 +62,4 @@ export default function Home () {
           )}
     </div>
   );
-}
-
-async function loadGame () {
-  try {
-    const { default: initGame } = await import('../../phaser/main.js');
-    initGame();
-    document.getElementById('root').style.display = 'none';
-  } catch (err) {
-    console.error('Failed to load game:', err);
-  }
 }
