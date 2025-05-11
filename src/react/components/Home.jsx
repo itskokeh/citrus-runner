@@ -3,7 +3,7 @@ import requestLandscapeAndLoadgame from '../utils/requestLandscapeAndLoadgame';
 import './Home.css';
 import { useState } from 'react';
 
-export default async function Home () {
+export default function Home () {
   const { isLoggedIn, signOut, user } = useBedrockPassport();
   const [gameStarted, setGameStarted] = useState(false);
 
