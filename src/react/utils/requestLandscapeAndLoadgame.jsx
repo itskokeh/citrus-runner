@@ -1,4 +1,4 @@
-export async function requestLandscapeAndLoadGame () {
+export default async function requestLandscapeAndLoadGame () {
   const isTabletOrSmaller = window.innerWidth <= 768;
 
   try {
