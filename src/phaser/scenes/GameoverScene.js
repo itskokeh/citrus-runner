@@ -15,13 +15,14 @@ export default class GameOverScene extends Phaser.Scene {
 
     const finalScore = this.registry.get('score');
     this.add.text(width / 2, height / 2, `Score: ${finalScore}`, {
+      fontFamily: 'SpaceGrotesk',
       fontSize: '24px',
       color: '#fff'
     }).setOrigin(0.5);
 
     const tryAgainBtn = this.add.text(width / 2, height / 2 + 50, 'Try Again', {
       fontSize: '28px',
-      color: '#00f'
+      color: 'orange'
     })
       .setOrigin(0.5)
       .setInteractive();
