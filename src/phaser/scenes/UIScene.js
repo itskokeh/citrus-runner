@@ -4,25 +4,21 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create () {
-    console.log('UIScene loaded');
-
     const gameScene = this.scene.get('GameScene');
     const soundManager = gameScene.soundManager;
     const padding = 10;
-    const buttonSpacing = 15; // Space between buttons
+    const buttonSpacing = 15;
 
-    // Right edge of the screen
     const rightEdge = this.cameras.main.width - padding;
 
     // --- Exit Button (Right-most) ---
     const exitButton = this.add.image(
       rightEdge,
       padding,
-      'exit-icon' // Make sure this texture exists
+      'exit-icon'
     ).setOrigin(1, 0) // Right-aligned
       .setInteractive()
       .on('pointerdown', () => {
-        // Handle exit action (e.g., return to main menu)
         this.scene.stop('GameScene');
         this.scene.start('MainMenuScene');
       });
