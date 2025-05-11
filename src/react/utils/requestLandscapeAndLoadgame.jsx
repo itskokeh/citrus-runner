@@ -21,10 +21,11 @@ export default async function requestLandscapeAndLoadGame () {
     const { default: initGame } = await import('../../phaser/main.js');
     initGame();
 
-    // Hide React root if present
+    const gameContainer = document.getElementById('game-container');
     const reactRoot = document.getElementById('root');
     if (reactRoot) {
       reactRoot.style.display = 'none';
+      gameContainer.style.display = 'block';
     }
   } catch (err) {
     console.warn('Game startup failed:', err);
@@ -33,9 +34,11 @@ export default async function requestLandscapeAndLoadGame () {
     const { default: initGame } = await import('../../phaser/main.js');
     initGame();
 
+    const gameContainer = document.getElementById('game-container');
     const reactRoot = document.getElementById('root');
     if (reactRoot) {
       reactRoot.style.display = 'none';
+      gameContainer.style.display = 'block';
     }
   }
 }
