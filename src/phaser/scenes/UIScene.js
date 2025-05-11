@@ -22,7 +22,7 @@ export default class UIScene extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => {
         this.scene.stop('GameScene');
-        this.game.destroy();
+        this.game.destroy(true);
         quitGame();
       });
 
