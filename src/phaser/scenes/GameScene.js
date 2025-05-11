@@ -22,7 +22,7 @@ export default class GameScene extends Phaser.Scene {
 
   create () {
     // Add debug render to see actual hitboxes
-    // this.physics.world.createDebugGraphic();
+    this.physics.world.createDebugGraphic();
     // Background
     const { width, height } = this.scale;
     this.bgTextures = ['arena-1', 'arena-2', 'arena-3', 'arena-4'];
@@ -87,10 +87,11 @@ export default class GameScene extends Phaser.Scene {
       applyPowerup(this.player, powerup.type);
       powerup.destroy();
     });
+
     this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
-      obstacle.destroy();
-      this.player.destroy();
-      this.scene.restart();
+      this.physics.pause();
+      this.scene.pause();
+      this.scene.launch('GameOverScene');
     });
 
     // Increase game speed
