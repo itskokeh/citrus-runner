@@ -21,6 +21,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create () {
+    this.physics.world.isPaused = false;
+    this.time.paused = false;
+
     // Add debug render to see actual hitboxes
     // this.physics.world.createDebugGraphic();
     // Background
@@ -44,15 +47,16 @@ export default class GameScene extends Phaser.Scene {
 
     // Sound
     this.soundManager = new SoundManager(this);
-
     this.bgMusic = this.sound.add('backgroundMusic', { loop: true });
-    this.bgMusic.play();
-    const jumpSound = this.sound.add('jump');
+    this.input.once('pointerdown', () => {
+      this.bgMusic.play();
+    });
 
     // Obstacles logic
     this.obstacles = this.add.group();
 
     // Player logic
+    const jumpSound = this.sound.add('jump');
     this.player = new Player(this, 100, 400);
     this.input.on('pointerdown', () => {
       this.player.jump();
@@ -89,8 +93,8 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
-      this.physics.pause();
       this.scene.pause();
+      this.physics.pause();
       this.bgMusic.stop();
       this.scene.launch('GameOverScene');
     });
@@ -137,14 +141,14 @@ export default class GameScene extends Phaser.Scene {
     if (this.isPaused) {
       this.physics.world.isPaused = true;
       this.time.paused = true;
-
+      this.bgMusic.pause();
       this.pauseGame(); // Use your velocity-based pause helper here
 
       this.scene.pause('GameScene');
     } else {
       this.physics.world.isPaused = false;
       this.time.paused = false;
-
+      this.bgMusic.resume();
       this.resumeGame(); // Use your velocity-based resume helper here
 
       this.scene.resume('GameScene');

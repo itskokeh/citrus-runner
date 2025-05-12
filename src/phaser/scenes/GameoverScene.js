@@ -32,7 +32,6 @@ export default class GameOverScene extends Phaser.Scene {
       this.scene.stop('GameOverScene');
       this.scene.stop('GameScene');
       this.scene.start('GameScene');
-      this.scene.get('GameScene').bgMusic.play();
     });
   }
 }

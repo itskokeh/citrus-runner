@@ -1,7 +1,7 @@
 export default class SoundManager {
   constructor (scene) {
     this.scene = scene;
-    this.isMuted = false; // Keeps track of the mute state
+    this.isMuted = false;
   }
 
   mute () {
