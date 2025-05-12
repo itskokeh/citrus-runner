@@ -4,9 +4,9 @@ const Provider = ({ children }) => {
   return (
     <BedrockPassportProvider
       baseUrl='https://api.bedrockpassport.com'
-      authCallbackUrl='https://hopper.kokeh.dev/auth/callback'
-      tenantId='orange-lnzb7mm3wy'
-      subscriptionKey='ee85e16ceba64e279a1811582221b1ff'
+      authCallbackUrl='https://runner.kokeh.dev/auth/callback'
+      tenantId='orange-viepsz08nz'
+      subscriptionKey='2edc1f112dbf45f0ad774f2ef4fbb7f9'
     >
       {children}
     </BedrockPassportProvider>
