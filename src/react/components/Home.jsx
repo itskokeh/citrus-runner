@@ -24,7 +24,7 @@ export default function Home () {
           <LoginPanel
             buttonClass='login-button'
             headerClass='login-panel-header'
-            title='Sign in to play Zero-G Hopper'
+            title='Sign in to play Citrus Runner'
             logo='/orange-web3-logo-v2a-20241018.svg'
             logoClass='login-panel-logo'
             panelClass='login-panel'
