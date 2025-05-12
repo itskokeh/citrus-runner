@@ -45,8 +45,8 @@ export default class GameScene extends Phaser.Scene {
     // Sound
     this.soundManager = new SoundManager(this);
 
-    this.sound.add('backgroundMusic', { loop: true });
-    this.sound.play('backgroundMusic');
+    this.bgMusic = this.sound.add('backgroundMusic', { loop: true });
+    this.bgMusic.play();
     const jumpSound = this.sound.add('jump');
 
     // Obstacles logic
@@ -91,6 +91,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player.sprite, this.obstacles, (_, obstacle) => {
       this.physics.pause();
       this.scene.pause();
+      this.bgMusic.stop();
       this.scene.launch('GameOverScene');
     });
 
