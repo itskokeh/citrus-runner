@@ -1,4 +1,15 @@
+# pnpm package manager
 node_modules
+
+# dist folder
 dist
-index.js
-index2.js
+
+# offline test react files
+src/react/App2.jsx
+src/react/App.css
+
+# images
+public/favicon.png
+public/Citrus Runner.png
+public/player-image.png
+public/react-background.png
