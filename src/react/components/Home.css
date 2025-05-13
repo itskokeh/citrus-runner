@@ -1,7 +1,7 @@
 /* Main container styles */
 
 @import '@bedrock_org/passport/dist/style.css';
-body {
+#root {
   background-image: url('/react-background.webp');
   background-position: center;
   background-size: cover;
