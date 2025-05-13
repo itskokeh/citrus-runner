@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export default function Home () {
   const { isLoggedIn, signOut, user } = useBedrockPassport();
+  // eslint-disable-next-line no-unused-vars
   const [gameStarted, setGameStarted] = useState(false);
 
   const handleStartGame = async () => {
