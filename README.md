@@ -7,8 +7,9 @@
 [![Vite](https://img.shields.io/badge/Vite-purple?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![pnpm](https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://tc39.es/)
-[![Bedrock Passport](https://img.shields.io/badge/Bedrock_Passport-24292e?logo=github)](https://github.com/bedrock-passport)
+[![Bedrock Passport](https://img.shields.io/badge/Bedrock_Passport-24292e?logo=github)](https://github.com/Bedrock-Org/bedrock-passport-example)
 
+- [📺 Demo](#-demo)
 - [🎮 Game Features](#-game-features)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [🚧 How to Run Locally](#-how-to-run-locally)
@@ -23,6 +24,10 @@ Built as part of a hackathon project to demonstrate modular game architecture
 using modern JavaScript tooling and ability to use AI.
 
 ![Login Preview](/public/backgrounds/citrus-runner-preview-homepage.png)
+
+### 📺 Demo
+
+> Try the game live here: [**https://runner.kokeh.dev**](https://runner.kokeh.dev)
 
 ### 🎮 Game Features
 
@@ -109,7 +114,7 @@ This project is open source under the [MIT License](./LICENSE).
 
 **Okechukwu Okeke**<br>
 [GitHub: @itskokeh](https://github.com/itskokeh)<br>
-[Email](mailto:kokeh@proton.me)<br>
+[Email: kokeh@proton.me](mailto:kokeh@proton.me)<br>
 Port Harcourt, Nigeria
 
 ---
