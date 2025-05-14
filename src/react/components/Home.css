@@ -2,7 +2,7 @@
 
 @import '@bedrock_org/passport/dist/style.css';
 #root {
-  background-image: url('/react-background.webp');
+  background-image: url('/backgrounds/game-pages-backgrounds/react-background.webp');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;

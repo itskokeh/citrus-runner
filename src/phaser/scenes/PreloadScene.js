@@ -10,10 +10,10 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('mute-icon', '/icons/volume_off_24dp_FFF.png');
     this.load.image('unmute-icon', '/icons/volume_up_24dp_FFF.png');
     this.load.image('exit-icon', '/icons/logout_24dp_FFF.png');
-    this.load.image('arena-1', '/backgrounds/arcade-1.webp');
-    this.load.image('arena-2', '/backgrounds/arcade-2.webp');
-    this.load.image('arena-3', '/backgrounds/arcade-3.webp');
-    this.load.image('arena-4', '/backgrounds/arcade-4.webp');
+    this.load.image('arena-1', '/backgrounds/game-backgrounds/arcade-1.webp');
+    this.load.image('arena-2', '/backgrounds/game-backgrounds/arcade-2.webp');
+    this.load.image('arena-3', '/backgrounds/game-backgrounds/arcade-3.webp');
+    this.load.image('arena-4', '/backgrounds/game-backgrounds/arcade-4.webp');
     this.load.image('crate', '/obstacles/crate.webp');
     this.load.image('flying-dynamite', '/obstacles/flying-dynamite.webp');
     this.load.image('magnet', '/powerups/magnet.webp');
