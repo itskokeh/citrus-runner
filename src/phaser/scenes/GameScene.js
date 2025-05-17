@@ -99,13 +99,31 @@ export default class GameScene extends Phaser.Scene {
       this.scene.launch('GameOverScene');
     });
 
-    // Increase game speed
+    // // Increase game speed
+    // this.time.addEvent({
+    //   delay: 10000,
+    //   callback: () => {
+    //     this.gameSpeed += 0.1;
+    //     this.bgMultiplier = (this.bgMultiplier * 102) / 100;
+    //     this.objSpeed = (this.objSpeed * 105) / 100;
+    //     this.updateSpeeds();
+    //   },
+    //   loop: true
+    // });
+
+    this.startTime = this.time.now;
+
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.gameSpeed += 0.1;
-        this.bgMultiplier = (this.bgMultiplier * 102) / 100;
-        this.objSpeed = (this.objSpeed * 105) / 100;
+        const elapsed = (this.time.now - this.startTime) / 1000;
+
+        const difficultyFactor = Math.log(1 + elapsed);
+
+        this.gameSpeed = 2 + difficultyFactor * 0.2;
+        this.bgMultiplier = 0.8 + difficultyFactor * 0.02;
+        this.objSpeed = 70 + difficultyFactor * 2;
+
         this.updateSpeeds();
       },
       loop: true
@@ -185,19 +203,40 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  createTokenCluster () {
-    const clusterSize = Phaser.Math.Between(3, 6);
+  // createTokenCluster () {
+  //   const clusterSize = Phaser.Math.Between(3, 6);
 
-    // Clear any existing delayed calls
+  //   if (this.clusterTimer) this.clusterTimer.remove();
+
+  //   for (let i = 0; i < clusterSize; i++) {
+  //     this.time.delayedCall(i * 200, () => spawnToken(this));
+  //   }
+
+  //   this.clusterTimer = this.time.delayedCall(3000 + (clusterSize * 200), () => {
+  //     this.createTokenCluster();
+  //   });
+  // }
+
+  createTokenCluster () {
+    const clusterSize = Phaser.Math.Between(10, 30);
+    const isZigZag = Phaser.Math.Between(0, 4) === 0; // 20% chance to zig-zag
+    const startY = Phaser.Math.Between(100, this.scale.height - 100);
+    const yStep = 20;
+    const direction = Phaser.Math.Between(0, 1) === 0 ? -1 : 1; // zig up or down
+    const delayPerToken = 200;
+
     if (this.clusterTimer) this.clusterTimer.remove();
 
-    // Spawn initial cluster
     for (let i = 0; i < clusterSize; i++) {
-      this.time.delayedCall(i * 200, () => spawnToken(this));
+      this.time.delayedCall(i * delayPerToken, () => {
+        const y = isZigZag
+          ? Phaser.Math.Clamp(startY + (i * yStep * direction), 50, this.scale.height - 50)
+          : startY;
+        spawnToken(this, y);
+      });
     }
 
-    // Schedule next cluster
-    this.clusterTimer = this.time.delayedCall(3000 + (clusterSize * 200), () => {
+    this.clusterTimer = this.time.delayedCall(3000 + (clusterSize * delayPerToken), () => {
       this.createTokenCluster();
     });
   }
@@ -222,11 +261,6 @@ export default class GameScene extends Phaser.Scene {
       obj.setVelocityX(-this.gameSpeed * this.objSpeed);
     });
   }
-
-  // handleCollision (player, obstacle) {
-  //   this.obstacles.destroy();
-  //   this.scene.restart();
-  // }
 
   update (time, delta) {
     if (this.isPaused) return;
