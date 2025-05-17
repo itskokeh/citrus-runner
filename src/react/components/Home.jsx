@@ -47,7 +47,7 @@ export default function Home () {
               <h1 className='logged-in-title'>
                 Welcome, {user?.displayName || user?.name || 'User'}!
               </h1>
-              <p className='logged-in-text'>Ready to play Zero-G Hopper?</p>
+              <p className='logged-in-text'>Ready to play Citrus Runner?</p>
               <button
                 onClick={handleStartGame}
                 className='primary-button'
